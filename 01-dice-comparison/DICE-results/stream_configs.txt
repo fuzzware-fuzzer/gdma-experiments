@@ -1,0 +1,90 @@
+./F103_ADC_SingleConversion_TriggerSW_DMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020010->*0x4001244c p_B:*0x40020014->*0x2000002c 
+./F103_ADC_SingleConversion_TriggerTimer_DMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020010->*0x4001244c p_B:*0x40020014->*0x200000a4 
+./F103_ChibiOS_ADC_slider
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020010->*0x4001244c p_B:*0x40020014->*0x20001348 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020010->*0x4001244c p_B:*0x40020014->*0x20001348 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020010->*0x4001244c p_B:*0x40020014->*0x20001348 
+./F103_ChibiOS_SPI
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020024->*0x4001300c p_B:*0x40020028->*0x200012f8 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020038->*0x4001300c p_B:*0x4002003c->*0x20001888 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020024->*0x4001300c p_B:*0x40020028->*0x200012f8 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020038->*0x4001300c p_B:*0x4002003c->*0x20001888 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020024->*0x4001300c p_B:*0x40020028->*0x200012f8 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020038->*0x4001300c p_B:*0x4002003c->*0x20001888 
+./F103_ChibiOS_UART
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020074->*0x40004404 p_B:*0x40020078->*0x20000854 
+./F103_ChibiOS_acelerometer
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020074->*0x40005410 p_B:*0x40020078->*0x20001108 
+./F103_I2C_OneBoard_AdvCommunication_DMAAndIT
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020060->*0x40005810 p_B:*0x40020064->*0x200000e0 
+./F103_I2C_OneBoard_Communication_DMAAndIT
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020050->*0x2000000c p_B:*0x4002004c->*0x40005810 
+./F103_I2C_TwoBoards_ComDMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020088->*0x40005410 p_B:*0x4002008c->*0x200001dc 
+./F103_I2C_TwoBoards_MasterTx_SlaveRx_DMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020088->*0x40005410 p_B:*0x4002008c->*0x20000030 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020078->*0x2000000d p_B:*0x40020074->*0x40005410 
+./F103_SPI_FullDuplex_ComDMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x4002004c->*0x4000380c p_B:*0x40020050->*0x20000190 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020060->*0x4000380c p_B:*0x40020064->*0x20000018 
+./F103_SPI_OneBoard_HalfDuplex_DMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x4002003c->*0x20000004 p_B:*0x40020038->*0x4001300c 
+DMA Stream configuration identified: *0x40020000 p_A:*0x4002004c->*0x4000380c p_B:*0x40020050->*0x200000b7 
+./F103_SPI_OneBoard_HalfDuplex_DMA_Init
+DMA Stream configuration identified: *0x40020000 p_A:*0x4002003c->*0x20000004 p_B:*0x40020038->*0x4001300c 
+DMA Stream configuration identified: *0x40020000 p_A:*0x4002004c->*0x4000380c p_B:*0x40020050->*0x200000f0 
+./F103_SPI_TwoBoards_FullDuplex_DMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x4002004c->*0x4000380c p_B:*0x40020050->*0x200000bb 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020064->*0x20000005 p_B:*0x40020060->*0x4000380c 
+./F103_UART_HyperTerminal_DMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x4002004c->*0x40013804 p_B:*0x40020050->*0x20000014 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020060->*0x40013804 p_B:*0x40020064->*0x200001e8 
+./F103_UART_TwoBoards_ComDMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020060->*0x40013804 p_B:*0x40020064->*0x200001a0 
+DMA Stream configuration identified: *0x40020000 p_A:*0x4002004c->*0x40013804 p_B:*0x40020050->*0x20000014 
+./F103_USART_Communication_TxRx_DMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020074->*0x40004404 p_B:*0x40020078->*0x20000028 
+./F103_USART_SyncCommunication_FullDuplex_DMA
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020050->*0x20000004 p_B:*0x4002004c->*0x40013804 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020060->*0x40013804 p_B:*0x40020064->*0x200000c5 
+DMA Stream configuration identified: *0x40020000 p_A:*0x4002003c->*0x20000054 p_B:*0x40020038->*0x4001300c 
+DMA Stream configuration identified: *0x40020000 p_A:*0x40020024->*0x4001300c p_B:*0x40020028->*0x20000113 
+./F429_ChibiOS_ADC_slider
+DMA Stream configuration identified: *0x40026400 p_A:*0x40026478->*0x4001204c p_B:*0x4002647c->*0x20001374 
+./L1521_ChibiOS_SPI
+DMA Stream configuration identified: *0x40026000 p_A:*0x4002604c->*0x4000380c p_B:*0x40026050->*0x200012f8 
+DMA Stream configuration identified: *0x40026000 p_A:*0x40026060->*0x4000380c p_B:*0x40026064->*0x20001888 
+DMA Stream configuration identified: *0x40026000 p_A:*0x4002604c->*0x4000380c p_B:*0x40026050->*0x200012f8 
+DMA Stream configuration identified: *0x40026000 p_A:*0x40026060->*0x4000380c p_B:*0x40026064->*0x20001888 
+DMA Stream configuration identified: *0x40026000 p_A:*0x4002604c->*0x4000380c p_B:*0x40026050->*0x200012f8 
+DMA Stream configuration identified: *0x40026000 p_A:*0x40026060->*0x4000380c p_B:*0x40026064->*0x20001888 
+./L1521_ChibiOS_UART
+DMA Stream configuration identified: *0x40026000 p_A:*0x40026060->*0x40013804 p_B:*0x40026064->*0x20000838 
+./LPC1837_PDMA_memory
+DMA Stream configuration identified: *0x40002000 p_A:*0x40002100->*0x10000078 p_B:*0x40002104->*0x10000088 
+./NRF51822_SPI_slave
+./NRF51822_console_bleprph
+./NRF52832_SPI_master
+./NRF52832_SPI_slave
+./NRF52832_console_bleprph
+./NRF52832_uart
+./NUC123_PDMA_memory
+DMA Stream configuration identified: *0x50008000 p_A:*0x50008004->*0x200000cc p_B:*0x50008008->*0x200001cc 
+./NUC123_PDMA_usart
+DMA Stream configuration identified: *0x50008000 p_A:*0x50008104->*0x200000d0 p_B:*0x50008108->*0x40150000 
+DMA Stream configuration identified: *0x50008000 p_A:*0x50008004->*0x40150000 p_B:*0x50008008->*0x20000114 
+./SAM3X_ADC_PDC.ino
+./SAM3X_spi_spi_dmac_slave_example_flash
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c4064->*0x2007012c p_B:*0x400c4068->*0x4000800c 
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c403c->*0x40008008 p_B:*0x400c4040->*0x2007012c 
+./SAM3X_usart_dmac_example
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c403c->*0x40098018 p_B:*0x400c4040->*0x20070a04 
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c4064->*0x20070a04 p_B:*0x400c4068->*0x4009801c 
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c403c->*0x40098018 p_B:*0x400c4040->*0x20070a04 
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c403c->*0x40098018 p_B:*0x400c4040->*0x20070a04 
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c4064->*0x20070a04 p_B:*0x400c4068->*0x4009801c 
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c4064->*0x20070a04 p_B:*0x400c4068->*0x4009801c 
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c403c->*0x40098018 p_B:*0x400c4040->*0x20070a04 
+DMA Stream configuration identified: *0x400c4000 p_A:*0x400c403c->*0x40098018 p_B:*0x400c4040->*0x20070a04 

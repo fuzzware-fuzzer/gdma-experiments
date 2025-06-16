@@ -1,0 +1,19 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+
+    descriptors:
+    - addr: 0x40026094 # DMA1->S5M0AR
+      to:
+        type: buffer
+      known_values:
+        # 0x20000e28
+        - rxBuffer
+
+    known_sizes:
+      rxBuffer:
+        min: 1024
+        max: 1024

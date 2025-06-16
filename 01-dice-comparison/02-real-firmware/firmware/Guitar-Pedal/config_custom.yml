@@ -1,0 +1,10 @@
+handlers:
+  # Disable P2IM-specific AFL forkserver handling
+  _Z7aflCallmml:
+
+memory_map:
+  # Make NULL page accessible to avoid crashes due to NULL pointer access on early interrupt raising
+  null_page:
+    base_addr: 0x0
+    permissions: rw-
+    size: 0x1000

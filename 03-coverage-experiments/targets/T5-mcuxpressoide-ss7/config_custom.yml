@@ -1,0 +1,24 @@
+interrupt_triggers:
+  # Trigger interrupts at WFI instruction
+  spiWrite1:
+    addr: wfimark
+    mode: fuzzed
+
+handlers:
+  # skip print functions
+  mtp2_dump:
+  ss7_message:
+  ss7_error:
+  # Skip (MMIO-based) output function
+  Chip_UART_SendBlocking:
+  # (Optional) The LPC1837 HAL seems to run into an infinite recursion for certain clock values.
+  #            It is not required to skip this, but the resulting crashing inputs may cause unnecessary
+  #            manual analysis effort. Thus, we skip the (otherwise irrelevant) SystemCoreClockUpdate,
+  #            Chip_UART_SetBaud and Chip_UART_SetBaudFDR functions.
+  SystemCoreClockUpdate:
+  Chip_UART_SetBaud:
+  Chip_UART_SetBaudFDR:
+
+exit_at:
+  # stop execution once the main function is done
+  exit_main:

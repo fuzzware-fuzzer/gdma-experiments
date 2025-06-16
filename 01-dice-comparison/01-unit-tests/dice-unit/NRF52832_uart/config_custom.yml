@@ -1,0 +1,5 @@
+memory_map:
+  dynamically_added_crash_region_10001200:
+    base_addr: 0x10000000
+    size: 0x2000
+    file: "./ficr.bin"

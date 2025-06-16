@@ -1,0 +1,30 @@
+handlers:
+  # Skip executing the idle hook
+  default_idle_hook:
+  printf:
+
+exit_at:
+  mbed_error:
+  mbed_die:
+  __assert_func:
+
+interrupt_triggers:
+  # Disable default interrupt trigger
+  trigger: {}
+  # Set interrupt trigger on idle loop
+  idle:
+    addr: default_idle_hook
+    fuzz_mode: fuzzed
+  # Trigger DMA interrupt at WFI instructions
+  spiWrite1:
+    addr: wfimark1
+    irq: 16
+  spiWrite2:
+    addr: wfimark2
+    irq: 16
+  spiRead1:
+    addr: wfimark3
+    irq: 16
+  spiRead2:
+    addr: wfimark4
+    irq: 16

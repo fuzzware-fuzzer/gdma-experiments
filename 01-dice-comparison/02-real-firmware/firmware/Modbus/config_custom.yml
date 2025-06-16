@@ -1,0 +1,3 @@
+handlers:
+  # Disable P2IM-specific AFL forkserver handling
+  aflCall:

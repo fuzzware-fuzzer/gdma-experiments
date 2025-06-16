@@ -1,0 +1,29 @@
+diff --git a/tools/parser/amp.c b/tools/parser/amp.c
+index 797531470..ec7f0c52b 100644
+--- a/tools/parser/amp.c
++++ b/tools/parser/amp.c
+@@ -20,8 +20,13 @@ static void amp_dump_chanlist(int level, struct amp_tlv *tlv, char *prefix)
+ 	struct amp_chan_list *chan_list = (void *) tlv->val;
+ 	struct amp_country_triplet *triplet;
+ 	int i, num;
++	uint16_t tlvlen = btohs(tlv->len);
+ 
+-	num = (tlv->len - sizeof(*chan_list)) / sizeof(*triplet);
++	if (tlvlen < sizeof(*chan_list)) {
++		return;
++	}
++
++	num = (tlvlen - sizeof(*chan_list)) / sizeof(*triplet);
+ 
+ 	printf("%s (number of triplets %d)\n", prefix, num);
+ 
+@@ -66,6 +71,9 @@ void amp_assoc_dump(int level, uint8_t *assoc, uint16_t len)
+ 		uint16_t tlvlen = btohs(tlv->len);
+ 		struct amp_pal_ver *ver;
+ 
++		if (tlvlen + sizeof(*tlv) > len)
++			break;
++
+ 		p_indent(level+1, 0);
+ 
+ 		switch (tlv->type) {

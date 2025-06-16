@@ -1,0 +1,19 @@
+include:
+  - config.yml
+
+peripherals:
+  readio_peripheral:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 16
+
+    descriptors:
+    - addr: 0x40001504 # RADIO PACKETPTR
+      known_values:
+        - rx_buf
+      to:
+        type: buffer
+
+    known_sizes:
+      rx_buf:
+        min: 0x1
+        max: 0x80

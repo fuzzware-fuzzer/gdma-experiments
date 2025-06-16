@@ -1,0 +1,16 @@
+handlers:
+  # this function accesses the flash and expects existing data structures
+  log_reboot_pkg_init:
+
+memory_map:
+  # this region contains the flash
+  # initialize it with 0xff bytes as this would be the normal state of an empty flash
+  dynamically_added_crash_region_0003f807:
+    file: ./flash_ff.bin
+  # factory information control registers
+  # used to configure the device during boot
+  ficr:
+    base_addr: 0x10000000
+    permissions: rw-
+    size: 0x2000
+    file: "./ficr.bin"

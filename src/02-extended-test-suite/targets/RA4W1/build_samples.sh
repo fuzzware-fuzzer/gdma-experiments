@@ -1,0 +1,1 @@
+/opt/e2studio/eclipse/e2studio --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -consoleLog -data /work/ -importAll /opt/samples/ra4w1_serial_contiguous -cleanBuild all

@@ -1,0 +1,11 @@
+diff --git a/examples/hello-world/Makefile b/examples/hello-world/Makefile
+index 0a79167ae..4a1d39a25 100644
+--- a/examples/hello-world/Makefile
++++ b/examples/hello-world/Makefile
+@@ -1,5 +1,6 @@
+ CONTIKI_PROJECT = hello-world
+ all: $(CONTIKI_PROJECT)
+
++CFLAGS += -g
+ CONTIKI = ../..
+ include $(CONTIKI)/Makefile.include

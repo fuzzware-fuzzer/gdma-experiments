@@ -1,0 +1,19 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+
+    descriptors:
+      - addr: 0x40020064 # DMA1->DMA_CMAR5
+        to:
+          type: buffer
+        known_values:
+          # 0x200041a8
+          - modbusRxTxBuffer
+
+    known_sizes:
+      modbusRxTxBuffer:
+        min: 256
+        max: 256

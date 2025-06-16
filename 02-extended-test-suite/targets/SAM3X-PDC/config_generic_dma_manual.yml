@@ -1,0 +1,18 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 1
+    # 400c4000 is the dma controller
+    descriptors:
+    - addr: 0x400e0900 # 400e0800 is uart, offset 100 is recv pointer?
+      to:
+        type: buffer 
+      known_values:
+        - dma_buf
+    known_sizes:
+      dma_buf:
+        min: 0x8
+        max: 0x8

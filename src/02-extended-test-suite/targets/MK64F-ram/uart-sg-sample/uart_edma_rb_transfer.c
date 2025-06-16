@@ -1,0 +1,235 @@
+/*
+ * Copyright 2019 NXP
+ * All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+#include "pin_mux.h"
+#include "clock_config.h"
+#include "board.h"
+#include "fsl_uart_edma.h"
+#include "fsl_dmamux.h"
+#include "pw_check.h"
+
+/*******************************************************************************
+ * Definitions
+ ******************************************************************************/
+/* UART instance and clock */
+#define EXAMPLE_UART                 UART0
+#define EXAMPLE_UART_CLKSRC          UART0_CLK_SRC
+#define EXAMPLE_UART_CLK_FREQ        CLOCK_GetFreq(UART0_CLK_SRC)
+#define UART_TX_DMA_CHANNEL          0U
+#define UART_RX_DMA_CHANNEL          1U
+#define EXAMPLE_UART_DMAMUX_BASEADDR DMAMUX0
+#define EXAMPLE_UART_DMA_BASEADDR    DMA0
+#define UART_TX_DMA_REQUEST          kDmaRequestMux0UART0Tx
+#define UART_RX_DMA_REQUEST          kDmaRequestMux0UART0Rx
+
+#define DEMO_UART_IRQn       UART0_RX_TX_IRQn
+#define DEMO_UART_IRQHandler UART0_RX_TX_IRQHandler
+#define BUFFER_SIZE 4
+
+/*******************************************************************************
+ * Prototypes
+ ******************************************************************************/
+/* Initialize the UART module. */
+static void EXAMPLE_InitUART(void);
+
+/* Initialize the EDMA configuration. */
+static void EXAMPLE_InitEDMA(void);
+
+/* Start ring buffer configuration. */
+static void StartSGDMA(void);
+
+/* Get how many bytes in ring buffer. */
+static uint32_t EXAMPLE_GetRingBufferLengthEDMA(void);
+
+/* Read the characters from ring buffer. */
+static void EXAMPLE_ReadRingBufferEDMA(uint8_t *ringBuffer, uint8_t *receiveBuffer, uint32_t length);
+
+/* UART user callback */
+void UART_UserCallback(UART_Type *base, uart_edma_handle_t *handle, status_t status, void *userData);
+
+/* UART user irq handler */
+void DEMO_UART_IRQHandler(void);
+/*******************************************************************************
+ * Variables
+ ******************************************************************************/
+
+uart_edma_handle_t g_uartEdmaHandle;
+edma_handle_t g_uartTxEdmaHandle;
+edma_handle_t g_uartRxEdmaHandle;
+uint8_t g_tipString[] = "UART EDMA example\r\nSend back received data\r\nEcho every 8 characters\r\n";
+// the final data buffer, the actual dma buffer is different
+uint8_t g_rxBuffer[BUFFER_SIZE] = {0};
+volatile bool txOnGoing                      = false;
+volatile bool rxIdleLineDetected             = false;
+volatile uint32_t ringBufferIndex            = 0U;
+
+// this is the actual dma buffer
+AT_NONCACHEABLE_SECTION_ALIGN(uint8_t dma_buf_1[BUFFER_SIZE], 16);
+// 8 byte padding to have a separation between buffers
+// should be there already anyway because of alignment
+volatile uint8_t pad[8] = {0};
+AT_NONCACHEABLE_SECTION_ALIGN(uint8_t dma_buf_2[BUFFER_SIZE], 16);
+/* Allocate TCD memory poll with ring buffer used. */
+// TODO: I think I need to change this to have two buffers configured
+AT_QUICKACCESS_SECTION_DATA_ALIGN(edma_tcd_t tcdMemoryPoolPtr[2], sizeof(edma_tcd_t));
+
+/*******************************************************************************
+ * Code
+ ******************************************************************************/
+/* Initialize the UART module. */
+static void EXAMPLE_InitUART(void)
+{
+    uart_config_t uartConfig;
+
+    /*
+     * uartConfig.baudRate_Bps = 115200U;
+     * uartConfig.parityMode = kUART_ParityDisabled;
+     * uartConfig.stopBitCount = kUART_OneStopBit;
+     * uartConfig.txFifoWatermark = 0;
+     * uartConfig.rxFifoWatermark = 1;
+     * uartConfig.enableTx = false;
+     * uartConfig.enableRx = false;
+     */
+    UART_GetDefaultConfig(&uartConfig);
+    uartConfig.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;
+    uartConfig.enableTx     = true;
+    uartConfig.enableRx     = true;
+
+    UART_Init(EXAMPLE_UART, &uartConfig, EXAMPLE_UART_CLK_FREQ);
+}
+
+/* Initialize the EDMA configuration. */
+static void EXAMPLE_InitEDMA(void)
+{
+    edma_config_t config;
+
+    /* Init DMAMUX */
+    DMAMUX_Init(EXAMPLE_UART_DMAMUX_BASEADDR);
+    /* Set channel for UART */
+    DMAMUX_SetSource(EXAMPLE_UART_DMAMUX_BASEADDR, UART_TX_DMA_CHANNEL, UART_TX_DMA_REQUEST);
+    DMAMUX_SetSource(EXAMPLE_UART_DMAMUX_BASEADDR, UART_RX_DMA_CHANNEL, UART_RX_DMA_REQUEST);
+    DMAMUX_EnableChannel(EXAMPLE_UART_DMAMUX_BASEADDR, UART_TX_DMA_CHANNEL);
+    DMAMUX_EnableChannel(EXAMPLE_UART_DMAMUX_BASEADDR, UART_RX_DMA_CHANNEL);
+
+    /* Init the EDMA module */
+    EDMA_GetDefaultConfig(&config);
+    EDMA_Init(EXAMPLE_UART_DMA_BASEADDR, &config);
+    EDMA_CreateHandle(&g_uartTxEdmaHandle, EXAMPLE_UART_DMA_BASEADDR, UART_TX_DMA_CHANNEL);
+    EDMA_CreateHandle(&g_uartRxEdmaHandle, EXAMPLE_UART_DMA_BASEADDR, UART_RX_DMA_CHANNEL);
+
+    /* Create UART DMA handle. */
+    UART_TransferCreateHandleEDMA(EXAMPLE_UART, &g_uartEdmaHandle, UART_UserCallback, NULL, &g_uartTxEdmaHandle, NULL);
+}
+
+/* Start ring buffer configuration. */
+static void StartSGDMA(void)
+{
+    edma_transfer_config_t xferConfig_1;
+    edma_transfer_config_t xferConfig_2;
+
+    /* Install TCD memory. */
+    // notably, this sets the memory pool ptr in the uart handle
+    EDMA_InstallTCDMemory(&g_uartRxEdmaHandle, tcdMemoryPoolPtr, 2U);
+
+    /* Prepare transfer to receive data to ring buffer. */
+    // this is the setup? Do I need to do it twice?
+    // Probably?
+    EDMA_PrepareTransfer(&xferConfig_1, (void *)UART_GetDataRegisterAddress(EXAMPLE_UART), sizeof(uint8_t), dma_buf_1,
+                         sizeof(uint8_t), sizeof(uint8_t), BUFFER_SIZE, kEDMA_PeripheralToMemory);
+    EDMA_PrepareTransfer(&xferConfig_2, (void *)UART_GetDataRegisterAddress(EXAMPLE_UART), sizeof(uint8_t), dma_buf_2,
+                         sizeof(uint8_t), sizeof(uint8_t), BUFFER_SIZE, kEDMA_PeripheralToMemory);
+    /* Submit transfer. */
+    g_uartRxEdmaHandle.tcdUsed = 1U;
+    g_uartRxEdmaHandle.tail    = 0U;
+    EDMA_TcdReset(&g_uartRxEdmaHandle.tcdPool[0U]);
+    EDMA_TcdReset(&g_uartRxEdmaHandle.tcdPool[1U]);
+    // Copy two descriptors from the stack into the pool global, with descr_0 -> descr_1
+    EDMA_TcdSetTransferConfig(&g_uartRxEdmaHandle.tcdPool[0U], &xferConfig_1, &g_uartRxEdmaHandle.tcdPool[1]);
+    EDMA_TcdSetTransferConfig(&g_uartRxEdmaHandle.tcdPool[1U], &xferConfig_2, NULL);
+
+    /* Enable major interrupt for calculating the received bytes. */
+    // Do I need to do this for both?
+    // yes, I think in general I need to do all the tcdpool stuff for both
+    g_uartRxEdmaHandle.tcdPool[0U].CSR |= DMA_CSR_INTMAJOR_MASK;
+    g_uartRxEdmaHandle.tcdPool[1U].CSR |= DMA_CSR_INTMAJOR_MASK;
+
+    /* There is no live chain, TCD block need to be installed in TCD registers. */
+    EDMA_InstallTCD(EXAMPLE_UART_DMA_BASEADDR, UART_RX_DMA_CHANNEL, &g_uartRxEdmaHandle.tcdPool[0U]);
+
+    /* Start EDMA transfer. */
+    EDMA_StartTransfer(&g_uartRxEdmaHandle);
+
+    /* Enable UART RX EDMA. */
+    UART_EnableRxDMA(EXAMPLE_UART, true);
+}
+
+/* UART user callback */
+void UART_UserCallback(UART_Type *base, uart_edma_handle_t *handle, status_t status, void *userData)
+{
+    userData = userData;
+
+    if (kStatus_UART_TxIdle == status)
+    {
+        txOnGoing = false;
+    }
+}
+
+/* UART user irq handler */
+void DEMO_UART_IRQHandler(void)
+{
+    if ((UART_GetStatusFlags(EXAMPLE_UART) & (uint32_t)kUART_IdleLineFlag) != 0U)
+    {
+        rxIdleLineDetected = true;
+        UART_ClearStatusFlags(EXAMPLE_UART, (uint32_t)kUART_IdleLineFlag);
+    }
+    // this should call the dma callback again, which sets txongoing to false
+    UART_TransferEdmaHandleIRQ(EXAMPLE_UART, &g_uartEdmaHandle);
+    SDK_ISR_EXIT_BARRIER;
+}
+
+/*!
+ * @brief Main function
+ */
+int main(void)
+{
+    uint32_t byteCount = 0U;
+    uart_transfer_t xfer;
+    uart_transfer_t sendXfer;
+
+    /* Initialzie the hardware. */
+    BOARD_InitBootPins();
+    BOARD_InitBootClocks();
+
+    /* Initialize the UART configurations. */
+    EXAMPLE_InitUART();
+
+    /* Initialize the EDMA configuration for UART trasnfer. */
+    EXAMPLE_InitEDMA();
+
+
+    /* Start ring buffer. */
+    StartSGDMA();
+
+    /* Enable IDLE line interrupt */
+    EnableIRQ(DEMO_UART_IRQn);
+    UART_EnableInterrupts(EXAMPLE_UART, (uint32_t)kUART_IdleLineInterruptEnable);
+
+    while (1)
+    {
+        byteCount = 0U;
+
+        /* Wait for idle line interrupt occur */
+        while (!rxIdleLineDetected)
+        {
+        }
+
+        rxIdleLineDetected = false;
+
+        // reception is done, so if we configured everything correctly, we can do the pw check here
+        check_password_scatter_gather(dma_buf_1, dma_buf_2);
+    }
+}

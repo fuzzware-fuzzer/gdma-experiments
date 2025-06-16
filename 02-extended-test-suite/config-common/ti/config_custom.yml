@@ -1,0 +1,19 @@
+handlers:
+  # Automated MMIO handling makes it hard for the fuzzer to pass this check
+  NOROM_ThisLibraryIsFor_CC13x1_CC26x1_HaltIfViolated:
+  # Anti-fuzzing busy delay function
+  NOROM_CPUdelay:
+  # This leads to crashes based on MMIO register value
+  NOROM_AUXSYSIFOpModeChange:
+
+memory_map:
+  rom:
+    base_addr: 0x10000000
+    # SDK location: source/ti/devices/cc13x1_cc26x1/rom/driverlib.elf
+    file: ./driverlib_0x10000000_cc13x1_cc26x1.bin
+    permissions: r-x
+    size: 0x20000
+  mmio:
+    size: 0x20100000
+  text:
+    is_entry: true

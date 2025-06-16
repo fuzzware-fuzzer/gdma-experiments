@@ -1,0 +1,48 @@
+--- uart_edma_transfer.c	2024-11-09 22:17:37.135828143 +0100
++++ cat/uart_edma_cat.c	2024-11-10 20:04:08.336392955 +0100
+@@ -11,6 +11,7 @@
+ #include "board.h"
+ #include "fsl_uart_edma.h"
+ #include "fsl_dmamux.h"
++#include "demo.h"
+ 
+ /*******************************************************************************
+  * Definitions
+@@ -25,7 +26,7 @@
+ #define EXAMPLE_UART_DMA_BASEADDR    DMA0
+ #define UART_TX_DMA_REQUEST          kDmaRequestMux0UART0Tx
+ #define UART_RX_DMA_REQUEST          kDmaRequestMux0UART0Rx
+-#define ECHO_BUFFER_LENGTH 8
++#define ECHO_BUFFER_LENGTH 128
+ 
+ /*******************************************************************************
+  * Prototypes
+@@ -84,6 +85,7 @@
+ 
+     BOARD_InitBootPins();
+     BOARD_InitBootClocks();
++    cat_start();
+ 
+     /* Initialize the UART. */
+     /*
+@@ -126,11 +128,6 @@
+     txOnGoing     = true;
+     UART_SendEDMA(DEMO_UART, &g_uartEdmaHandle, &xfer);
+ 
+-    /* Wait send finished */
+-    while (txOnGoing)
+-    {
+-    }
+-
+     /* Start to echo. */
+     sendXfer.data        = g_txBuffer;
+     sendXfer.dataSize    = ECHO_BUFFER_LENGTH;
+@@ -156,7 +153,7 @@
+         /* If g_txBuffer is empty and g_rxBuffer is full, copy g_rxBuffer to g_txBuffer. */
+         if ((!rxBufferEmpty) && (!txBufferFull))
+         {
+-            memcpy(g_txBuffer, g_rxBuffer, ECHO_BUFFER_LENGTH);
++            cat_process(g_rxBuffer, ECHO_BUFFER_LENGTH, g_txBuffer, ECHO_BUFFER_LENGTH);
+             rxBufferEmpty = true;
+             txBufferFull  = true;
+         }

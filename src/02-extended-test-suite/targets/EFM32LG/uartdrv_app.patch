@@ -1,0 +1,78 @@
+25c25
+< #include "pw_check.h"
+---
+> 
+30a31,32
+> #define OUTPUT_BUFSIZE (INPUT_BUFSIZE + 40)
+> 
+36c38,41
+< uint8_t dma_buf[INPUT_BUFSIZE] __attribute__((aligned(16))) = {0};
+---
+> uint8_t rx_byte;
+> 
+> // Track number of bytes transmitted
+> static uint8_t tx_counter = 0;
+37a43,47
+> // Input buffer
+> static char buffer[INPUT_BUFSIZE];
+> 
+> // Output buffer
+> char reply[OUTPUT_BUFSIZE];
+52a63,69
+>   (void)handle;
+>   (void)data;
+>   (void)transferCount;
+> 
+>   if (transferStatus == ECODE_EMDRV_UARTDRV_OK) {
+>     tx_counter++;
+>   }
+60a78,81
+>   (void)transferCount;
+>   (void)handle;
+>   static uint8_t index = 0;
+> 
+62c83,106
+<     check_password(dma_buf);
+---
+>     // If end of line is entered, echo input data
+>     if (*data == '\r' || *data == '\n') {
+>       buffer[index] = '\0';
+> 
+>       //  Handling CR+LF (\r+\n) condition
+>       if (index > 0) {
+>         sprintf(reply, "\r\n\r\nYou wrote: %s \r\n\r\n> ", buffer);
+> 
+>         // Echo the input string
+>         UARTDRV_Transmit(sl_uartdrv_leuart_vcom_handle,
+>                          (uint8_t *)reply, strlen(reply),
+>                          UART_tx_callback);
+>       }
+>       index = 0;
+>     } else {
+>       if (index < INPUT_BUFSIZE - 1) {
+>         buffer[index] = *data;
+>         index++;
+>       }
+>       // Echo the input character
+>       UARTDRV_Transmit(sl_uartdrv_leuart_vcom_handle,
+>                        data, 1,
+>                        UART_tx_callback);
+>     }
+63a108,112
+> 
+>   /* Receive the next byte */
+>   UARTDRV_Receive(sl_uartdrv_leuart_vcom_handle,
+>                   &rx_byte, 1,
+>                   UART_rx_callback);
+91a141,147
+>   /* Output on vcom leuart instance */
+>   char *str1 = "\r\n\r\nUARTDRV LEUART example\r\n\r\n> ";
+> 
+>   // Non-blocking transmit
+>   UARTDRV_Transmit(sl_uartdrv_leuart_vcom_handle,
+>                    (uint8_t *)str1, strlen(str1),
+>                    UART_tx_callback);
+94c150
+<                   dma_buf, 8,
+---
+>                   &rx_byte, 1,

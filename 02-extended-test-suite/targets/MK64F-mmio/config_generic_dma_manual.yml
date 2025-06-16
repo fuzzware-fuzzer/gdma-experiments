@@ -1,0 +1,23 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 5
+
+    descriptors:
+    - addr: 0x40009030 # 4000_9030 TCD Destination Address (DMA_TCD1_DADDR)
+      to:
+        type: buffer
+      known_values:
+        # 0x1fff0078
+        - dma_buf
+
+    known_sizes:
+      dma_buf:
+        min: 0x8
+        max: 0x8
+
+    # Possible wrong classifications
+    # 4000_9000 TCD Source Address (DMA_TCD0_SADDR)

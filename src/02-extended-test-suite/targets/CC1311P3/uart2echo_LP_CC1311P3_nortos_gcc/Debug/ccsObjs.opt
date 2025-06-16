@@ -1,0 +1,10 @@
+"./main_nortos.o"
+"./uart2echo.o"
+"./syscfg/ti_devices_config.o"
+"./syscfg/ti_drivers_config.o"
+-Wl,-T"../cc13x1_cc26x1_nortos.lds"
+-l:ti_utils_build_linker.cmd.genlibs
+-lgcc
+-lc
+-lm
+-lnosys

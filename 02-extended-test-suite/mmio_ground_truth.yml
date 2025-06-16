@@ -1,0 +1,83 @@
+    
+LPC1837:
+  name: LPC1837
+  ELF: periph_uart.elf
+  dma_mmio_dest_regs: { 0x40002104, 0x40002124, 0x40002144, 0x40002164, 0x40002184, 0x400021a4, 0x400021e4 }
+  buf0:
+    type: r
+    buffer_address: 0x100002dc
+    buffer_size: 16
+    pc_dma_access: {0x1a000560}
+    bb_dma_access: {0x1a000550}
+
+MK64F:
+  name: MK64F
+  ELF: uart_example.elf  
+  buf0:
+    type: r
+    buffer_address: 0x1fff0078
+    buffer_size: 8
+    pc_dma_access: {0x8dc}
+    bb_dma_access: {0x8cc}
+
+NRF52832: 
+  name: NRF52832
+  ELF: uart_example.elf
+  buf0:
+    type: r
+    buffer_address: 0x200000c0
+    buffer_size: 4
+    pc_dma_access: {0x4ce, 0x145c}
+    bb_dma_access: {0x4ca, 0x1454}
+
+NUC123:
+  name: NUC123
+  ELF: nuc123_uart_example.elf  
+  buf0:
+    type: r
+    buffer_address: 0x200000b8
+    buffer_size:  0x40
+    pc_dma_access: {0x272}
+    bb_dma_access: {0x268}
+
+SAM3X:
+  name: SAM3X
+  ELF: sam3x_uart_contiguous.elf  
+  buf0:
+    type: r
+    buffer_address: 0x20070714
+    buffer_size: 8
+    pc_dma_access: {0x80d2e}
+    bb_dma_access: {0x80d28}
+
+STM32F103:
+  name: STM32F103
+  ELF: stm32f103_usart_contiguous.elf
+  board: f103
+  buf0:
+    type: r
+    buffer_address: 0x2000000c
+    buffer_size: 8
+    pc_dma_access: {0x8000360}
+    bb_dma_access: {0x8000358}
+    bb_dma_init: 0x8000464  
+
+RA4W1:
+  name: RA4W1
+  ELF: ra4w1_serial_contiguous.elf
+  buf0:
+    type: r
+    buffer_address: 0x20000914
+    buffer_size: 32
+    pc_dma_access: {0xcf4}
+    bb_dma_access: {0xcec}
+
+CY8CKIT-149:
+  name: CY8CKIT-149
+  ELF: mtb-example-psoc4-uart-transmit-receive-dma.elf
+  buf0:
+    type: r
+    buffer_address: 0x20000144
+    buffer_size: 0xc
+    pc_dma_access: {0x7f6}
+    bb_dma_access: {0x7ec}

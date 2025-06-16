@@ -1,0 +1,18 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+
+    descriptors:
+    - addr: 0x40020064 # LL_DMA_CHANNEL_5->CMAR
+      to:
+        type: buffer
+      known_values:
+        - usart_rx_dma_buffer # 0x200009d8
+
+    known_sizes:
+      usart_rx_dma_buffer:
+        min: 64
+        max: 64

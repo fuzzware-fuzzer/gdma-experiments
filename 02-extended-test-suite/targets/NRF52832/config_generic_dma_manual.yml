@@ -1,0 +1,22 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 16
+
+    descriptors:
+    - addr: 0x40002534 # UARTE0 RXD.PTR
+      to:
+        type: buffer
+      known_values:
+        # 0x200000c0
+        - rx_buffer
+
+    known_sizes:
+      # Only 1 byte is used (due to 1-by-1 byte read in app_uart_get),
+      # but the next variable is aligned to a 4-byte boundary
+      rx_buffer:
+        min: 1
+        max: 4

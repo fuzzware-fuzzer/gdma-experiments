@@ -1,0 +1,423 @@
+interrupt_triggers:
+  trigger:
+    every_nth_tick: 0x3e8
+    fuzz_mode: round_robin
+memory_map:
+  irq_ret:
+    base_addr: 0xfffff000
+    permissions: --x
+    size: 0x1000
+  mmio:
+    base_addr: 0x40000000
+    permissions: rw-
+    size: 0x20000000
+  nvic:
+    base_addr: 0xe0000000
+    permissions: rw-
+    size: 0x10000000
+  ram:
+    base_addr: 0x20000000
+    permissions: rw-
+    size: 0x100000
+  text:
+    base_addr: 0x0
+    file: ra4w1_serial_contiguous_dtc.bin
+    is_entry: true
+    ivt_offset: 0x0
+    permissions: r-x
+    size: 0x1020034
+symbols:
+  0x0:
+  - startup.c
+  - vector_data.c
+  - bsp_rom_registers.c
+  - crtstuff.c
+  - SEGGER_RTT.c
+  - SEGGER_RTT_printf.c
+  - hal_entry.c
+  - spi_ep.c
+  - main.c
+  - r_spi.c
+  - r_ioport.c
+  - r_dtc.c
+  - bsp_clocks.c
+  - bsp_common.c
+  - bsp_delay.c
+  - bsp_group_irq.c
+  - bsp_irq.c
+  - bsp_register_protection.c
+  - system.c
+  - board_init.c
+  - memcpy-stub.c
+  - memset.c
+  - crti.o
+  - crtn.o
+  - hal_data.c
+  - pin_data.c
+  - libc_a-strlen.o
+  - crtstuff.c
+  - common_data.c
+  - bsp_io.c
+  - __Vectors
+  - __ospi_device_1_non_retentive_size__
+  - __dtcm_data_end
+  - XIP_SECONDARY_SLOT_IMAGE
+  - OSPI_DEVICE_0_PRV_LENGTH
+  - __bl_FLASH_NSC_START
+  - __ospi_device_0_non_retentive_size__
+  - __OPTION_SETTING_OFS_End
+  - __tz_OPTION_SETTING_S
+  - __dtcm_bss_start
+  - __tz_DTCM_S
+  - RAM_NS_BUFFER_BLOCK_LENGTH
+  - USE_OPTION_SETTING_NS
+  - OPTION_SETTING_START
+  - QSPI_FLASH_PRV_LENGTH
+  - ITCM_START
+  - FLASH_START
+  - __itcm_data_end
+  - __OPTION_SETTING_NS_Start
+  - __bl_FLASH_IMAGE_END
+  - __bl_FLASH_IMAGE_LENGTH
+  - OPTION_SETTING_LENGTH
+  - DTCM_START
+  - __tz_DTCM_N
+  - __itcm_data_start
+  - FLASH_ORIGIN
+  - __qspi_non_retentive_size__
+  - OSPI_DEVICE_1_LENGTH
+  - PROJECT_SECURE_OR_FLAT
+  - __RESERVE_NS_RAM
+  - __bln_FLASH_IMAGE_LENGTH
+  - ITCM_LENGTH
+  - __OPTION_SETTING_OFS_Start
+  - __tz_ITCM_N
+  - __bl_FLASH_NS_IMAGE_START
+  - __ROM_Start
+  - __ospi_device_0_code_size__
+  - __dtcm_data_start
+  - __OPTION_SETTING_NS_End
+  - DTCM_LENGTH
+  - __dtcm_bss_end
+  - OPTION_SETTING_SAS_LENGTH
+  - __bl_RAM_NS_START
+  - RAM_NS_BUFFER_LENGTH
+  - OSPI_DEVICE_1_PRV_LENGTH
+  - OPTION_SETTING_S_LENGTH
+  - __ospi_device_1_code_size__
+  - __bl_RAM_NSC_START
+  - __bl_XIP_SECONDARY_FLASH_IMAGE_END
+  - __bl_FLASH_IMAGE_START
+  - __tz_ITCM_S
+  - __tz_FLASH_S
+  - OSPI_DEVICE_0_LENGTH
+  - __qspi_flash_code_size__
+  - __bln_FLASH_IMAGE_START
+  - __bl_XIP_SECONDARY_FLASH_IMAGE_START
+  - SDRAM_LENGTH
+  - QSPI_FLASH_LENGTH
+  - __bl_FLASH_NS_START
+  0x1:
+  - __bln_FSP_BOOTABLE_IMAGE
+  - __bl_FSP_BOOTABLE_IMAGE
+  0x20: ID_CODE_LENGTH
+  0x34:
+  - OPTION_SETTING_SAS_SIZE
+  - __OPTION_SETTING_SAS_Start
+  - __OPTION_SETTING_SAS_End
+  0x40: g_vector_table
+  0x80:
+  - __tz_OPTION_SETTING_N
+  - OPTION_SETTING_START_NS
+  0xc0:
+  - __Vectors_Size
+  - __Vectors_End
+  0x400: g_bsp_rom_registers
+  0x43d: deregister_tm_clones
+  0x459: register_tm_clones
+  0x47d: __do_global_dtors_aux
+  0x4a5: frame_dummy
+  0x4c9: _WriteNoCheck
+  0x501: _WriteBlocking
+  0x565: _DoInit
+  0x5d1: SEGGER_RTT_WriteNoLock
+  0x65d: SEGGER_RTT_Write
+  0x691: _StoreChar
+  0x6d1: _PrintUnsigned
+  0x7c5: SEGGER_RTT_vprintf
+  0xb71: SEGGER_RTT_printf
+  0xb91: hal_entry
+  0xc41: R_BSP_WarmStart
+  0xc59: pwcheck_success
+  0xc6d: pwcheck_passed_1
+  0xc7d: pwcheck_passed_2
+  0xc8d: pwcheck_passed_3
+  0xc9d: pwcheck_passed_4
+  0xcad: pwcheck_passed_5
+  0xcbd: pwcheck_passed_6
+  0xccd: pwcheck_passed_7
+  0xcdd: pwcheck_passed_8
+  0xced: check_password
+  0xd65: spi_init
+  0xdf5: spi_write_and_read
+  0xed9: spi_master_callback
+  0xef1: spi_slave_callback
+  0xf09: main
+  0xf15: r_spi_call_callback
+  0xf55: R_SPI_Close
+  0x1035: r_spi_write_read_common
+  0x11f9: R_SPI_Read
+  0x1211: R_SPI_Open
+  0x1549: spi_rxi_isr
+  0x15e9: spi_txi_isr
+  0x16c1: spi_tei_isr
+  0x17a9: spi_eri_isr
+  0x1895: bsp_vbatt_init
+  0x197d: r_ioport_pins_config
+  0x1a19: R_IOPORT_Open
+  0x1a4d: R_DTC_SoftwareStart
+  0x1a51: R_DTC_SoftwareStop
+  0x1a55: R_DTC_Disable
+  0x1a89: R_DTC_Reload
+  0x1a8d: R_DTC_CallbackSet
+  0x1a91: r_dtc_length_assert
+  0x1ac9: R_DTC_InfoGet
+  0x1b39: R_DTC_Close
+  0x1b7d: r_dtc_prv_enable.isra.0
+  0x1bf1: R_DTC_Reset
+  0x1c8d: R_DTC_Enable
+  0x1cad: R_DTC_Reconfigure
+  0x1d4d: R_DTC_Open
+  0x1e19: SystemCoreClockUpdate
+  0x1e41: bsp_clock_init
+  0x1f2d: R_BSP_Init_RTC
+  0x1f55: R_FSP_VersionGet
+  0x1f68: sw_delay_loop
+  0x1f69: bsp_prv_software_delay_loop
+  0x1f75: R_BSP_SoftwareDelay
+  0x1fc5: NMI_Handler
+  0x2000: DATA_FLASH_LENGTH
+  0x2001: bsp_irq_cfg
+  0x2031: R_BSP_RegisterProtectEnable
+  0x2091: R_BSP_RegisterProtectDisable
+  0x20e5:
+  - DebugMon_Handler
+  - HardFault_Handler
+  - SysTick_Handler
+  - PendSV_Handler
+  - UsageFault_Handler
+  - SecureFault_Handler
+  - Default_Handler
+  - MemManage_Handler
+  - SVC_Handler
+  - BusFault_Handler
+  0x20e9: Reset_Handler
+  0x20f5: SystemInit
+  0x224d: bsp_init
+  0x2251: memcpy
+  0x226d: memset
+  0x227c: g_fsp_version_build_string
+  0x22c0: g_fsp_version_string
+  0x22c8: g_fsp_version
+  0x22cd: _init
+  0x22d9: _fini
+  0x2784: _aInitStr.0
+  0x2798: _aV2C.0
+  0x27a8: __FUNCTION__.1
+  0x27bc: __FUNCTION__.0
+  0x27c8: g_spi_master_cfg
+  0x27ec: g_spi_master_ext_cfg
+  0x27f8: g_transfer0
+  0x2804: g_transfer0_cfg
+  0x280c: g_transfer0_cfg_extend
+  0x2810: g_transfer1
+  0x281c: g_transfer1_cfg
+  0x2824: g_transfer1_cfg_extend
+  0x2828: g_spi_slave_cfg
+  0x284c: g_spi_slave_ext_cfg
+  0x2858: g_transfer2
+  0x2864: g_transfer2_cfg
+  0x286c: g_transfer2_cfg_extend
+  0x2870: g_transfer3
+  0x287c: g_transfer3_cfg
+  0x2884: g_transfer3_cfg_extend
+  0x2888: g_bsp_pin_cfg
+  0x2894: g_bsp_pin_cfg_data
+  0x28d4: g_interrupt_event_link_select
+  0x28f4: g_vbatt_pins_input
+  0x28fc: g_transfer_on_dtc
+  0x2928: g_prcr_masks
+  0x2930:
+  - __EH_FRAME_BEGIN__
+  - __usb_descriptor_end_hs
+  - __usb_cfg_descriptor_start_fs
+  - __usb_descriptor_end_fs
+  - __usb_interface_descriptor_start_hs
+  - __usb_cfg_descriptor_start_hs
+  - __usb_dev_descriptor_start_hs
+  - __usb_interface_descriptor_start_fs
+  - __usb_dev_descriptor_start_fs
+  0x2958: __FRAME_END__
+  0x295c:
+  - __ROM_End
+  - __exidx_end
+  - __etext
+  - __itcm_data_pre_location
+  - __exidx_start
+  0x2960:
+  - __itcm_data_init_start
+  - __itcm_data_init_end
+  0x29a8:
+  - __qspi_flash_code_addr__
+  - sgstubs_pre_location
+  - __ospi_device_0_code_addr__
+  - __ospi_device_1_code_addr__
+  - __dtcm_data_pre_location
+  0x29b0:
+  - __dtcm_data_init_start
+  - __dtcm_data_init_end
+  0x2c00:
+  - SGSTUBS_LOC
+  - _start_sg
+  - __tz_FLASH_C
+  - _end_sg
+  0x8000:
+  - __tz_FLASH_N
+  - FLASH_NS_IMAGE_START
+  0x18000: RAM_LENGTH
+  0x80000:
+  - FLASH_LENGTH
+  - LIMITED_FLASH_LENGTH
+  0x1010018:
+  - g_bsp_id_codes
+  - ID_CODE_START
+  - __tz_ID_CODE_N
+  - __ID_Code_Start
+  - __tz_ID_CODE_S
+  0x1010034: __ID_Code_End
+  0x4000000: __qspi_region_max_size__
+  0x8000000: __ospi_device_0_region_max_size__
+  0x10000000: __ospi_device_1_region_max_size__
+  0x20000000:
+  - gp_dtc_vector_table
+  - RAM_START
+  - __tz_RAM_S
+  0x20000080:
+  - g_wait_count
+  - __data_start__
+  - __Code_In_RAM_End
+  - __Code_In_RAM_Start
+  0x20000084: g_transfer0_info
+  0x20000094: g_transfer1_info
+  0x200000a4: g_transfer2_info
+  0x200000b4: g_transfer3_info
+  0x200000c4:
+  - __frame_dummy_init_array_entry
+  - __preinit_array_end
+  - __init_array_start
+  - __preinit_array_start
+  0x200000c8:
+  - __do_global_dtors_aux_fini_array_entry
+  - __init_array_end
+  0x200000cc:
+  - g_clock_freq
+  - __TMC_END__
+  - __data_end__
+  - __noinit_start
+  0x200000e0:
+  - completed.1
+  - __bss_start__
+  - __noinit_end
+  0x200000e4: object.0
+  0x200000fc: _acDownBuffer
+  0x2000013c: _acUpBuffer
+  0x2000093c: _SEGGER_RTT
+  0x200009e4: g_slave_rx_buff
+  0x20000a64:
+  - g_master_rx_buff
+  - dma_buf
+  0x20000ae4: g_master_tx_buff
+  0x20000b64: g_slave_event_flag
+  0x20000b65: g_master_event_flag
+  0x20000b68: num_correct
+  0x20000b6c: g_ioport_ctrl
+  0x20000b74: g_spi_master_ctrl
+  0x20000ba4: g_transfer0_ctrl
+  0x20000bac: g_transfer1_ctrl
+  0x20000bb4: g_spi_slave_ctrl
+  0x20000be4: g_transfer2_ctrl
+  0x20000bec: g_transfer3_ctrl
+  0x20000bf4: dummy_tx.0
+  0x20000bf8: dummy_rx.1
+  0x20000bfc: g_dtc_state_initialized.0
+  0x20000c00: g_bsp_group_irq_sources
+  0x20000c34: g_protect_pfswe_counter
+  0x20000c38: gp_renesas_isr_context
+  0x20000cb8: g_protect_counters
+  0x20000cc0: SystemCoreClock
+  0x20000cc4: __bss_end__
+  0x20000cc8:
+  - g_heap
+  - __HeapBase
+  0x200010c8:
+  - g_main_stack
+  - __HeapLimit
+  - __StackLimit
+  0x200014c8:
+  - __StackTopAll
+  - __RAM_segment_used_end__
+  - __StackTop
+  - __stack
+  0x20001800: __tz_RAM_C
+  0x20002000: __tz_RAM_N
+  0x20018000:
+  - RAM_NS_BUFFER_START
+  - RAM_NS_BUFFER_BLOCK_START
+  0x40100000:
+  - __Data_Flash_End
+  - DATA_FLASH_START
+  - __tz_DATA_FLASH_N
+  - __tz_DATA_FLASH_S
+  - __Data_Flash_Start
+  0x60000000:
+  - __qspi_region_start_address__
+  - __qspi_non_retentive_start__
+  - QSPI_FLASH_START
+  - __tz_QSPI_FLASH_N
+  - __qspi_flash_end__
+  - __qspi_flash_start__
+  - __tz_QSPI_FLASH_S
+  - __qspi_non_retentive_end__
+  0x64000000: __qspi_region_end_address__
+  0x80000000:
+  - __tz_OPTION_SETTING_S_N
+  - OPTION_SETTING_S_START
+  - __tz_OPTION_SETTING_S_S
+  - __OPTION_SETTING_S_Start
+  - __OPTION_SETTING_S_End
+  0x80010000:
+  - __tz_SDRAM_S
+  - SDRAM_START
+  - __tz_SDRAM_N
+  - __SDRAM_Start
+  - __SDRAM_End
+  0x80020000:
+  - __tz_OSPI_DEVICE_0_N
+  - __ospi_device_0_non_retentive_end__
+  - __ospi_device_0_non_retentive_start__
+  - __ospi_device_0_region_start_address__
+  - OSPI_DEVICE_0_START
+  - __ospi_device_0_end__
+  - __ospi_device_0_start__
+  - __tz_OSPI_DEVICE_0_S
+  0x80030000:
+  - __tz_OSPI_DEVICE_1_N
+  - __ospi_device_1_non_retentive_start__
+  - __ospi_device_1_region_start_address__
+  - OSPI_DEVICE_1_START
+  - __ospi_device_1_non_retentive_end__
+  - __ospi_device_1_end__
+  - __tz_OSPI_DEVICE_1_S
+  - __ospi_device_1_start__
+  0x88020000: __ospi_device_0_region_end_address__
+  0x90030000: __ospi_device_1_region_end_address__

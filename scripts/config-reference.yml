@@ -1,0 +1,41 @@
+# A reference configuration for an individual experiment, with annotations
+
+# the name of the experiment
+exp_name: "dice-unit"
+# if 1, do a dry-run instead
+debug: 0
+# how many cores can we use at most?
+num_cores: 20
+# the output directory
+out_dir: output
+# the number of times we want to repeat the individual runs
+individual_num_runs: 5
+# a mapping of emulation strategy names to matching config files
+strategy_mapping:
+  no-dma: config.yml
+  manual-generic-dma : config_generic_dma_manual.yml
+  automatic-generic-dma: config.yml
+  # reference-dma : config_dma_reference.yml
+  # reference-dma-large : config_dma_reference_too_large.yml
+  # manual-generic-dma-predefined : predefined_models.yml
+  # manual-generic-dma-large : config_generic_dma_manual_too_large.yml
+
+# the root folder of all config.ymls
+eval-targets:
+  - dice-unit 
+  # - dice-unit/F103_ADC_SingleConversion_TriggerSW_DMA     
+  # - F103_ADC_SingleConversion_TriggerTimer_DMA  
+
+  
+# how many seconds can we deviate from the 24h runtime?
+runtime_flexibility: 10
+
+# name of results file
+out_file: results_dice_unit.yml
+
+# runtime of individual fuzzware runs
+runtime: "24:00:00"
+
+# use python modeling
+use_python_modeling: False 
+

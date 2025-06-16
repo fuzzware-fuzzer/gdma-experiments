@@ -1,0 +1,163 @@
+interrupt_triggers:
+  trigger:
+    every_nth_tick: 0x3e8
+    fuzz_mode: round_robin
+memory_map:
+  irq_ret:
+    base_addr: 0xfffff000
+    permissions: --x
+    size: 0x1000
+  mmio:
+    base_addr: 0x40000000
+    permissions: rw-
+    size: 0x20000000
+  nvic:
+    base_addr: 0xe0000000
+    permissions: rw-
+    size: 0x10005000
+  ram:
+    base_addr: 0x20000000
+    permissions: rw-
+    size: 0x100000
+  text:
+    base_addr: 0x0
+    file: NRF51822_SPI_slave.bin
+    is_entry: true
+    ivt_offset: 0x0
+    permissions: r-x
+    size: 0x115ac
+symbols:
+  0x0:
+  - _build/nrf51422_xxac_gcc_startup_nrf51.S.o
+  - crtstuff.c
+  - /home/alejandro/Applications/gcc-arm-none-eabi-9-2019-q4-major/bin/../lib/gcc/arm-none-eabi/9.2.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp/crt0.o
+  - exit.c
+  - init.c
+  - memset.c
+  - _exit.c
+  - app_error.c
+  - app_error_weak.c
+  - app_timer.c
+  - boards.c
+  - nrf_drv_common.c
+  - nrf_drv_gpiote.c
+  - nrf_drv_spi.c
+  - nrf_drv_uart.c
+  - main.c
+  - system_nrf51.c
+  - /home/alejandro/Applications/gcc-arm-none-eabi-9-2019-q4-major/bin/../lib/gcc/arm-none-eabi/9.2.1/thumb/v6-m/nofp/crti.o
+  - /home/alejandro/Applications/gcc-arm-none-eabi-9-2019-q4-major/bin/../lib/gcc/arm-none-eabi/9.2.1/thumb/v6-m/nofp/crtn.o
+  - impure.c
+  - crtstuff.c
+  - __isr_vector
+  0x3: NRF_POWER_RAMONx_RAMxON_ONMODE_Msk
+  0xc1: __do_global_dtors_aux
+  0xe9: frame_dummy
+  0x109:
+  - _mainCRTStartup
+  - _start
+  0x181: exit
+  0x1ad: __libc_init_array
+  0x1f5: memset
+  0x205: _exit
+  0x209: app_error_handler_bare
+  0x229: app_error_fault_handler
+  0x245: RTC1_IRQHandler
+  0x321: SWI0_IRQHandler
+  0x800:
+  - Stack_Size
+  - Heap_Size
+  0x831: bsp_board_led_invert
+  0x861: bsp_board_leds_init
+  0x89d: nrf_drv_common_irq_enable
+  0x919: GPIOTE_IRQHandler
+  0xddd: nrf_drv_spi_init
+  0xf69: nrf_drv_spi_transfer
+  0x10d1: SPI0_TWI0_IRQHandler
+  0x1161: UART0_IRQHandler
+  0x12ed: spi_event_handler
+  0x12f9: main
+  0x13c9: Reset_Handler
+  0x1409: NMI_Handler
+  0x140b: HardFault_Handler
+  0x140d: SVC_Handler
+  0x140f: PendSV_Handler
+  0x1411: SysTick_Handler
+  0x1413:
+  - TIMER2_IRQHandler
+  - RTC0_IRQHandler
+  - POWER_CLOCK_IRQHandler
+  - RADIO_IRQHandler
+  - LPCOMP_IRQHandler
+  - SWI4_IRQHandler
+  - TEMP_IRQHandler
+  - QDEC_IRQHandler
+  - SWI5_IRQHandler
+  - TIMER0_IRQHandler
+  - TIMER1_IRQHandler
+  - ECB_IRQHandler
+  - Default_Handler
+  - ADC_IRQHandler
+  - SWI3_IRQHandler
+  - CCM_AAR_IRQHandler
+  - WDT_IRQHandler
+  - SWI2_IRQHandler
+  - RNG_IRQHandler
+  - SPI1_TWI1_IRQHandler
+  - SWI1_IRQHandler
+  0x1415: SystemInit
+  0x14f5: _init
+  0x1501: _fini
+  0x150c: _global_impure_ptr
+  0x1510: m_board_led_list
+  0x1524: spi
+  0x152c:
+  - __EH_FRAME_BEGIN__
+  - __FRAME_END__
+  0x1530: __exidx_start
+  0x1538:
+  - __exidx_end
+  - __etext
+  0x20000000:
+  - impure_data
+  - __data_start__
+  0x20000060: m_tx_buf
+  0x20000068: SystemCoreClock
+  0x2000006c:
+  - __frame_dummy_init_array_entry
+  - __preinit_array_end
+  - __init_array_start
+  - __preinit_array_start
+  0x20000070:
+  - __do_global_dtors_aux_fini_array_entry
+  - __init_array_end
+  0x20000074: __data_end__
+  0x20000078:
+  - completed.8911
+  - __bss_start__
+  0x2000007c: object.8916
+  0x20000094: m_evt_schedule_func
+  0x20000098: m_op_queue
+  0x200000a0: m_rtc1_reset
+  0x200000a1: m_rtc1_running
+  0x200000a4: m_ticks_elapsed
+  0x200000ac: m_ticks_elapsed_q_read_ind
+  0x200000ad: m_ticks_elapsed_q_write_ind
+  0x200000b0: m_ticks_latest
+  0x200000b4: mp_timer_id_head
+  0x200000b8: m_cb
+  0x20000100: m_cb
+  0x20000120: m_cb
+  0x2000013c: m_rx_buf
+  0x20000144: spi_xfer_done
+  0x20000148:
+  - __HeapBase
+  - __bss_end__
+  - __end__
+  0x20000948: __HeapLimit
+  0x20007800: __StackLimit
+  0x20008000:
+  - __StackTop
+  - __stack
+  0x40000524: NRF_POWER_RAMON_ADDRESS
+  0x40000554: NRF_POWER_RAMONB_ADDRESS

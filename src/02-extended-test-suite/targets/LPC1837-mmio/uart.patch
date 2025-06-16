@@ -1,0 +1,63 @@
+diff --git a/opt/workspace/periph_uart/example/src/uart.c b/opt/samples/periph_uart/uart.c
+index ad3d4b0..8232bf5 100644
+--- a/opt/workspace/periph_uart/example/src/uart.c
++++ b/opt/samples/periph_uart/uart.c
+@@ -32,6 +32,7 @@
+ 
+ #include "chip.h"
+ #include "board.h"
++#include "pw_check.h"
+ 
+ /*****************************************************************************
+  * Private types/enumerations/variables
+@@ -87,6 +88,8 @@ STATIC RINGBUFF_T txring, rxring;
+ /* Ring buffer size */
+ #define UART_RB_SIZE 256
+ 
++uint8_t receiveBuffer[16];
++EXPORT_DMA_BUFFER_ALIAS(receiveBuffer);
+ /* Transmit and receive buffers */
+ static uint8_t rxbuff[UART_RB_SIZE], txbuff[UART_RB_SIZE];
+ 
+@@ -150,7 +153,33 @@ static void App_DMA_DeInit(void)
+ 	NVIC_DisableIRQ(DMA_IRQn);
+ }
+ 
++/* PATCHED DMA ROUTINE */
++static void App_DMA_Test(void)
++{
++
++
++	App_DMA_Init();
++	
++	// Perform one receive
++	dmaChannelNumRx = Chip_GPDMA_GetFreeChannel(LPC_GPDMA, _GPDMA_CONN_UART_Rx);
++	isDMATx = DISABLE;
++	channelTC = channelTCErr = 0;
++	Chip_GPDMA_Transfer(LPC_GPDMA, dmaChannelNumRx,
++					  _GPDMA_CONN_UART_Rx,
++					  (uint32_t) &receiveBuffer[0],
++					  GPDMA_TRANSFERTYPE_P2M_CONTROLLER_DMA,
++					  10);
++	while (!channelTC) {}
++	
++	// check the password
++	check_password((void *)dma_buf);
++
++	App_DMA_DeInit();
++}
++
++
+ /* DMA routine for example_uart */
++/*
+ static void App_DMA_Test(void)
+ {
+ 	uint8_t receiveBuffer[16];
+@@ -188,6 +217,7 @@ static void App_DMA_Test(void)
+ 
+ 	App_DMA_DeInit();
+ }
++*/
+ 
+ /* Print Welcome Screen Menu subroutine by Interrupt mode */
+ static void Print_Menu_Interrupt(LPC_USART_T *UARTx)

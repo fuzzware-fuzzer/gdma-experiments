@@ -1,0 +1,30 @@
+include:
+  - config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    descriptors:
+    - addr: 0x40005404 # DTC Vector Base Register
+      known_values:
+      - gp_dtc_vector_table
+      to:
+        type: descriptor
+        fields:
+        - offset: 0x0
+          type: pointer
+          known_values:
+            - g_transfer1_info
+          to:
+            type: descriptor
+            fields:
+            - offset: 0x8
+              type: pointer
+              known_values:
+                - g_master_rx_buff
+              to:
+                type: buffer
+    known_sizes:
+      g_master_rx_buff:
+        min: 0x1
+        max: 0x400

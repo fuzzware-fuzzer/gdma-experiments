@@ -1,0 +1,19 @@
+debug: 0
+eval-targets:
+- Guitar-Pedal
+- Modbus
+- Stepper-Motor
+- GPS-Receiver
+- MIDI-Synthesizer
+- Soldering-Station
+exp_name: dice-fuzzing
+individual_num_runs: 1
+num_cores: 50
+out_dir: output
+out_file: results_dice_fuzzing.yml
+runtime: 0:01:00
+runtime_flexibility: 10
+strategy_mapping:
+  automatic-generic-dma: config.yml
+  no-dma: config.yml
+use_python_modeling: false

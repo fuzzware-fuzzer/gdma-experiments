@@ -1,0 +1,65 @@
+diff --git a/DICE-Evaluation/ARM/Fuzzing/fuzz.py b/DICE-Evaluation/ARM/Fuzzing/fuzz.py
+index 9a78127..933bc71 100755
+--- a/DICE-Evaluation/ARM/Fuzzing/fuzz.py
++++ b/DICE-Evaluation/ARM/Fuzzing/fuzz.py
+@@ -48,6 +48,7 @@ def read_config(cfg_f):
+     
+ 
+     return Namespace(
++        timeout = parser.get("DEFAULT", "timeout"),
+         working_dir = os.path.abspath(parser.get("DEFAULT", "working_dir")),
+         prog        = parser.get("DEFAULT", "program"),
+         run         = parser.get("DEFAULT", "run"),
+@@ -57,6 +58,7 @@ def read_config(cfg_f):
+         afl_output  = os.path.abspath(parser.get("afl", "output")),
+         qemu_bin    = os.path.abspath(parser.get("qemu", "bin")),
+         mcu         = parser.get("program", "mcu"),
++        board         = parser.get("program", "board"),
+         img         = os.path.abspath(parser.get("program", "img")),
+         log_f       = os.path.abspath(parser.get("model", "log_file")),
+         me_bin      = os.path.abspath(parser.get("model", "bin")),
+@@ -118,8 +120,8 @@ if __name__ == "__main__":
+         f.write("bin         = %s\n" % cfg.qemu_bin)
+         f.write("log         = unimp,guest_errors,int\n\n")
+         f.write("[program]\n")
+-        f.write("board       = %s\n" % cfg_board[cfg.mcu])
+-        f.write("mcu         = %s\n" % cfg_mcu[cfg.mcu])
++        f.write("board       = %s\n" % cfg.board)
++        f.write("mcu         = %s\n" % cfg.mcu)
+         f.write("img         = %s\n\n" % cfg.img)
+         f.write("[model]\n")
+         f.write("retry_num   = 3\n")
+@@ -165,7 +167,7 @@ if __name__ == "__main__":
+ 
+         color_print("run f/w w/ seed input to check if there is aup")
+         cmd_qemu = [cfg.qemu_bin, "-nographic", "-aflFile", seed,
+-          "-board", cfg_board[cfg.mcu], "-mcu", cfg_mcu[cfg.mcu], "-image", cfg.img,
++          "-board", cfg.board, "-mcu", cfg.mcu, "-image", cfg.img,
+           "-pm-stage", "3", "-model-input", args.model_if, 
+           # options below are not used in no forkserver mode
+           "-me-bin", cfg.me_bin, "-me-config", cfg_f]
+@@ -211,7 +213,7 @@ if __name__ == "__main__":
+     # launch fuzzer
+     color_print("launch fuzzer", "blue")
+ 
+-    cmd_afl = [cfg.afl_bin, "-i", cfg.afl_seed, "-o", cfg.afl_output, 
++    cmd_afl = ["timeout", cfg.timeout, cfg.afl_bin, "-i", cfg.afl_seed, "-o", cfg.afl_output, 
+         "-t", cfg.afl_timeout, "-QQ", 
+         # used by only non forkserver mode
+         # AFL passes model_if to qemu, so we don't pass it here
+@@ -226,13 +228,13 @@ if __name__ == "__main__":
+ 
+     if 'none' in cfg.redzones:
+        cmd_afl_qemu += [cfg.qemu_bin, "-nographic",
+-              "-board",  cfg_board[cfg.mcu] , "-mcu", cfg_mcu[cfg.mcu], "-image", cfg.img,
++              "-board",  cfg.board , "-mcu", cfg.mcu, "-image", cfg.img,
+               "-pm-stage", "3", "-aflFile", "@@", 
+           ]
+        
+     else:
+        cmd_afl_qemu += [cfg.qemu_bin, "-nographic",
+-            "-board",  cfg_board[cfg.mcu] , "-mcu",  cfg_mcu[cfg.mcu], "-image", cfg.img, "--dmaFile", cfg.redzones,
++            "-board",  cfg.board , "-mcu",  cfg.mcu, "-image", cfg.img, "--dmaFile", cfg.redzones,
+             "-pm-stage", "3", "-aflFile", "@@", 
+          
+         ]

@@ -1,0 +1,8 @@
+# cmd successfully decoded, advance parser state to stepper
+0x08006484
+# stepper correctly decoded, advance parser state to param
+0x080064ec
+# the param parser has two ways to set the state to value, so we set the value parser function as milestone instead
+0x0800664c
+# pass actual data to stepper, not just metadata
+0x080066d0

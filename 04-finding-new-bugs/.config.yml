@@ -1,0 +1,19 @@
+debug: 0
+eval-targets:
+- contiki-ng-CVE-2023-48229
+- mbed-os-CVE-2024-48981
+- mbed-os-CVE-2024-48982
+- mbed-os-CVE-2024-48983
+- mbed-os-CVE-2024-48985
+- mbed-os-CVE-2024-48986
+exp_name: 04-bugs
+individual_num_runs: 1
+num_cores: 50
+out_dir: output
+out_file: results_experiment_04.yml
+runtime: 0:01:00
+runtime_flexibility: 10
+strategy_mapping:
+  automatic-generic-dma: config.yml
+  no-dma: config.yml
+use_python_modeling: false

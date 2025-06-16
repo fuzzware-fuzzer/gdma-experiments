@@ -1,0 +1,17 @@
+include:
+- config.yml
+
+peripherals:
+  dma_buf_on_bb:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+
+    descriptors:
+      - addr: 0x40026094 # DMA1_Stream5->M0AR
+        to:
+          type: buffer
+        known_values:
+          - midiBuffer # 0x20004de8
+    known_sizes:
+      midiBuffer:
+        min: 8
+        max: 8

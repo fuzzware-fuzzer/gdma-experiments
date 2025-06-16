@@ -1,0 +1,38 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 0x5
+
+    # Example 14: LPC1837 (scatter-gather)
+    descriptors:
+    - addr: 0x40002104 # and other DMA channels, if used. Offsets: 0x104 (DESTADDR0), 0x124 (LLI1), ..., 0x1e4 (DESTADDR7)
+      known_values:
+        - DMADest_Buffer
+      to:
+        type: buffer
+    - addr: 0x40002108 # and other DMA channels, if used. Offsets: 0x108 (LLI0), 0x128 (LLI1), ..., 0x1e8 (LLI7)
+      known_values:
+        - 0x10007fa4
+      to:
+        typedef: LPC18xx_lli
+        fields:
+        - offset: 4
+          type: pointer
+          known_values:
+            - DMADest_Buffer_2
+          to:
+            type: buffer
+        - offset: 8
+          type: pointer
+          to:
+            type: LPC18xx_lli
+    known_sizes:
+      DMADest_Buffer:
+        min: 0x1
+        max: 0x80
+      DMADest_Buffer_2:
+        min: 0x1
+        max: 0x80

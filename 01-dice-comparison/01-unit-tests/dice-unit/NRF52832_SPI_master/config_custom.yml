@@ -1,0 +1,6 @@
+memory_map:
+  ficr:
+    base_addr: 0x10000000
+    permissions: rw-
+    size: 0x2000
+    file: "./ficr.bin"

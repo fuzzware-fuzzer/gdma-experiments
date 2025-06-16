@@ -1,0 +1,69 @@
+--- demo.c	2024-12-04 14:29:57.466803358 +0100
++++ cat/demo.c	2024-11-10 19:57:07.661450099 +0100
+@@ -29,7 +29,8 @@
+ 
+ #include <assert.h>
+ 
+-#include "../src/cat.h"
++#include "fsl_uart_edma.h"
++#include "cat.h"
+ 
+ static int32_t speed;
+ static uint16_t adr;
+@@ -229,16 +230,26 @@
+         .buf_size = sizeof(buf)
+ };
+ 
++char *io_read_buf = NULL;
++char *io_write_buf = NULL;
++int io_read_len, io_read_ptr, io_write_len, io_write_ptr;
++
+ static int write_char(char ch)
+ {
+-        putc(ch, stdout);
++    if (io_write_ptr < io_read_len) {
++        io_write_buf[io_write_ptr++] = ch;
+         return 1;
++    }
++    return 0;
+ }
+ 
+ static int read_char(char *ch)
+ {
+-        *ch = getc(stdin);
++    if (io_read_ptr < io_read_len) {
++        *ch = io_read_buf[io_read_ptr++];
+         return 1;
++    }
++    return 0;
+ }
+ 
+ static struct cat_io_interface iface = {
+@@ -246,15 +257,19 @@
+         .write = write_char
+ };
+ 
+-int main(int argc, char **argv)
+-{
+-        struct cat_object at;
++struct cat_object at;
+ 
++void cat_start() {
+         cat_init(&at, &desc, &iface, NULL);
++}
+ 
+-        while ((cat_service(&at) != 0) && (quit_flag == 0)) {};
+-
+-        printf("Bye!\n");
+-
+-        return 0;
++int cat_process(char *read_buf, int read_len, char *write_buf, int write_len)
++{
++    io_read_buf = read_buf;
++    io_write_buf = write_buf;
++    io_read_len = read_len;
++    io_write_len = write_len;
++    io_read_ptr = 0;
++    io_write_ptr = 0;
++    while ((cat_service(&at) != 0) && (quit_flag == 0) && io_read_ptr != io_read_len && io_write_ptr != io_write_len) {};
+ }

@@ -1,0 +1,35 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 5
+
+    descriptors:
+    - addr: 0x40020008  # udma->ctrl
+      to:
+        type: descriptor
+        fields:
+        # First descriptor (0x00-0x10) is unpopulated
+        # Descriptor layout (Table 12-4. Channel Control Structure)
+        # 0x00: Source end pointer
+        # 0x04: Destination end pointer
+        # 0x08: Control word
+        # 0x0c: Unused entry
+        - offset: 0x14
+          type: pointer
+          is_buf_end_ptr: true
+          to:
+            type: buffer
+
+      known_values:
+        - dmaUart0RxControlTableEntry
+
+    known_sizes:
+      dma_buf:
+        min: 0x8
+        max: 0x8
+      uart2RxRingBuffer0:
+        min: 0x20
+        max: 0x20

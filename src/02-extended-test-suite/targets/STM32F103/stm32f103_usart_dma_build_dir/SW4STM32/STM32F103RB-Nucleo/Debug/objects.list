@@ -1,0 +1,5 @@
+"./Drivers/CMSIS/system_stm32f1xx.o"
+"./Drivers/STM32F1xx_LL_Driver/stm32f1xx_ll_utils.o"
+"./Example/SW4STM32/startup_stm32f103xb.o"
+"./Example/User/main.o"
+"./Example/User/stm32f1xx_it.o"

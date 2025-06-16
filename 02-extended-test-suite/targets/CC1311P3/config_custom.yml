@@ -1,0 +1,29 @@
+include:
+- ./../../config-common/ti/config_custom.yml
+
+handlers:
+  # Remove the MMIO-based serial read fallback for errors in UART2CC26X2_hwiIntFxn
+  skip_mmio_read_fallback:
+    addr: 0x22f4
+    handler: native.inline_asm_00bf00bf
+  # Remove the MMIO-based serial read fallback for errors in UART2CC26X2_hwiIntFxn (from RingBuf_put)
+  skip_mmio_read_fallback_2:
+    addr: 0x21ec
+    # Replace MMIO
+    # Read: ldr r1,[r2,#0x0]
+    # With: movs r1, 0
+    handler: native.inline_asm_0021
+  skip_mmio_read_fallback_3:
+    addr: 0x236e
+    # Replace MMIO
+    # Read: ldr r1,[r2,#0x0]
+    # With: movs r1, 0
+    handler: native.inline_asm_0021
+
+mmio_models:
+  passthrough:
+    # Fix MMIO modeling issue
+    # Register at 0x40020008 is not detected as a pointer (which the firmware
+    # requires to stay intact)
+    custom_model_pointer_passthrough:
+      addr: 0x40020008

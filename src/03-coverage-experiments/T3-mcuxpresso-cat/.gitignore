@@ -1,0 +1,4 @@
+rebuilt/
+output/
+mcuxsdk/
+hci/bluez

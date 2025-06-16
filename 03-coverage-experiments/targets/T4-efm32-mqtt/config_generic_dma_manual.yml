@@ -1,0 +1,30 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 1
+
+    descriptors:
+    - addr: 0x400c2008 # dma_ctrlbase is offset 8, dma base is 400c2000
+      to:
+        type: descriptor
+        fields:
+          # 0x10: src
+          # 0x14: dst
+          - offset: 0x14
+            type: pointer
+            # pointer to end of buffer (with last being inclusive)
+            # transfer size is 100, offset is -(100-1)
+            is_buf_end_ptr: true
+            to:
+              type: buffer
+
+      known_values:
+        - dmaControlBlock
+
+    known_sizes:
+      dma_buf:
+        min: 100
+        max: 100

@@ -1,0 +1,47 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 5
+
+    descriptors:
+    - addr: 0x4028080C # descriptor 1, layout in arch manual page 89
+      to:
+        type: descriptor
+        known_values:
+        - RxDma_Descriptor_0
+        typedef: inf_descriptor
+        fields:
+          # There seems to be an inconsistency between the descriptor type layout
+          # - Reference manual: Figure 10-2. Descriptor structure shows the layout of DESCR_SRC, DESCR_DST, DESCR_CTL, "X Size", "Y Size", DESCR_NEXT_PTR
+          # - C implementation: cy_stc_dma_descriptor_t has 6 members ctl, src, dst, xCtl, yCtl, nextPtr
+          # This leads to the following assumed offsets:
+          # - Reference manual: 4: dst, 0x14: next
+          # - C implementation: 8: dst, 0x10: next
+
+          # We go with the C implementation version here
+          # 8: dst
+          - offset: 0x8
+            type: pointer
+            to:
+              type: buffer
+            known_values:
+              - dma_buf_0
+              - dma_buf_1
+          # 0x10: nextPtr
+          - offset: 0x10
+            type: pointer
+            to:
+              type: inf_descriptor
+            known_values:
+            - RxDma_Descriptor_1
+
+    known_sizes:
+      dma_buf_0:
+        min: 4
+        max: 4
+      dma_buf_1:
+        min: 4
+        max: 4

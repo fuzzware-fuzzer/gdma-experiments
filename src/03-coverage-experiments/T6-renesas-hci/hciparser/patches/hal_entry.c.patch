@@ -1,0 +1,185 @@
+--- orig/hal_entry.c	2024-12-10 14:32:12.070070787 +0100
++++ src/hal_entry.c	2024-12-10 14:07:18.089426974 +0100
+@@ -23,6 +23,7 @@
+ 
+ #include "common_utils.h"
+ #include "spi_ep.h"
++#include "parser.h"
+ 
+ void R_BSP_WarmStart(bsp_warm_start_event_t event);
+ /*******************************************************************************************************************//**
+@@ -68,75 +69,108 @@
+         APP_PRINT("\r\n ** SPI INIT SUCCESSFUL ** \r\n");
+     }
+ 
+-    /* Menu for User Selection */
+-    APP_PRINT("\r\nSelect from the below Menu options\r\n");
+-    APP_PRINT("\r\nPress 1 for Write() and Read()");
+-    APP_PRINT("\r\nPress 2 for WriteRead()");
+-    APP_PRINT("\r\nPress 3 to Exit\r\n");
++    init_parser(
++        DUMP_RAW | DUMP_VERBOSE,
++        FILT_LMP	|
++        FILT_HCI	|
++        FILT_SCO	|
++        FILT_L2CAP	|
++        FILT_A2MP	|
++        FILT_RFCOMM	|
++        FILT_SDP	|
++        FILT_BNEP	|
++        FILT_CMTP	|
++        FILT_HIDP	|
++        FILT_HCRP	|
++        FILT_ATT	|
++        FILT_SMP	|
++        FILT_AVDTP	|
++        FILT_AVCTP	|
++        FILT_OBEX	|
++        FILT_CAPI	|
++        FILT_PPP	|
++        FILT_SAP	|
++        FILT_CSR	|
++        FILT_DGA,
++        0,
++        DEFAULT_COMPID,
++        -1,
++        -1
++    );
+ 
+-    while (EXIT != converted_rtt_input)
+-    {
+-        if (APP_CHECK_DATA)
+-        {
+-            APP_READ(rByte);
+-            converted_rtt_input = (uint8_t)atoi((char *)rByte);
+-
+-            switch (converted_rtt_input)
+-            {
+-                case WRITE_AND_READ:
+-                    err = spi_write_and_read ();
+-                    if (FSP_SUCCESS != err)
+-                    {
+-                        APP_PRINT("** SPI WRITE AND READ Demo failed **  \r\n");
+-                        spi_clean_up();
+-                        APP_ERR_TRAP(err);
+-                    }
+-                    else
+-                    {
+-                        APP_PRINT("\r\n** SPI WRITE AND READ Demo Successful**  \r\n");
+-                    }
+-                    break;
+-                case WRITE_READ:
+-                    err = spi_write_read ();
+-                    if (FSP_SUCCESS != err)
+-                    {
+-                        APP_PRINT("\r\n** SPI WRITE Demo failed **  \r\n");
+-                        spi_clean_up();
+-                        APP_ERR_TRAP(err);
+-                    }
+-                    else
+-                    {
+-                        APP_PRINT("** SPI WRITE AND READ Demo Successful**  \r\n");
+-                    }
+-                    break;
+-                case EXIT:
+-                    err = spi_exit_demo();
+-                    if (FSP_SUCCESS != err)
+-                    {
+-                        APP_PRINT("** SPI EXIT Demo failed ** \r\n");
+-                        APP_ERR_TRAP(err);
+-                    }
+-                    else
+-                    {
+-                        APP_PRINT("** SPI EXIT Demo successful ** \r\n");
+-                    }
+-                    break;
+-                default:
+-                    /* Menu for User Selection */
+-                    APP_PRINT("\r\nSelect from the below Menu options\r\n");
+-                    APP_PRINT("\r\nPress 1 for Write() and Read()");
+-                    APP_PRINT("\r\nPress 2 for WriteRead()");
+-                    APP_PRINT("\r\nPress 3 to Exit\r\n");
+-                    break;
+-            }
+-            if((WRITE_AND_READ <= converted_rtt_input) && (EXIT > converted_rtt_input))
+-            {
+-                APP_PRINT ("\r\nEnter any other key to go back to the main menu\r\n");
+-            }
+-        }
++    for (int i = 0; i < 10; i++) {
++        spi_write_and_read();
+     }
+ 
+-    APP_PRINT(RTT_CTRL_TEXT_BRIGHT_CYAN "\r\nExiting SPI demo....\r\n" RTT_CTRL_RESET);
++    // /* Menu for User Selection */
++    // APP_PRINT("\r\nSelect from the below Menu options\r\n");
++    // APP_PRINT("\r\nPress 1 for Write() and Read()");
++    // APP_PRINT("\r\nPress 2 for WriteRead()");
++    // APP_PRINT("\r\nPress 3 to Exit\r\n");
++
++    // while (EXIT != converted_rtt_input)
++    // {
++    //     if (APP_CHECK_DATA)
++    //     {
++    //         APP_READ(rByte);
++    //         converted_rtt_input = (uint8_t)atoi((char *)rByte);
++
++    //         switch (converted_rtt_input)
++    //         {
++    //             case WRITE_AND_READ:
++    //                 err = spi_write_and_read ();
++    //                 if (FSP_SUCCESS != err)
++    //                 {
++    //                     APP_PRINT("** SPI WRITE AND READ Demo failed **  \r\n");
++    //                     spi_clean_up();
++    //                     APP_ERR_TRAP(err);
++    //                 }
++    //                 else
++    //                 {
++    //                     APP_PRINT("\r\n** SPI WRITE AND READ Demo Successful**  \r\n");
++    //                 }
++    //                 break;
++    //             case WRITE_READ:
++    //                 err = spi_write_read ();
++    //                 if (FSP_SUCCESS != err)
++    //                 {
++    //                     APP_PRINT("\r\n** SPI WRITE Demo failed **  \r\n");
++    //                     spi_clean_up();
++    //                     APP_ERR_TRAP(err);
++    //                 }
++    //                 else
++    //                 {
++    //                     APP_PRINT("** SPI WRITE AND READ Demo Successful**  \r\n");
++    //                 }
++    //                 break;
++    //             case EXIT:
++    //                 err = spi_exit_demo();
++    //                 if (FSP_SUCCESS != err)
++    //                 {
++    //                     APP_PRINT("** SPI EXIT Demo failed ** \r\n");
++    //                     APP_ERR_TRAP(err);
++    //                 }
++    //                 else
++    //                 {
++    //                     APP_PRINT("** SPI EXIT Demo successful ** \r\n");
++    //                 }
++    //                 break;
++    //             default:
++    //                 /* Menu for User Selection */
++    //                 APP_PRINT("\r\nSelect from the below Menu options\r\n");
++    //                 APP_PRINT("\r\nPress 1 for Write() and Read()");
++    //                 APP_PRINT("\r\nPress 2 for WriteRead()");
++    //                 APP_PRINT("\r\nPress 3 to Exit\r\n");
++    //                 break;
++    //         }
++    //         if((WRITE_AND_READ <= converted_rtt_input) && (EXIT > converted_rtt_input))
++    //         {
++    //             APP_PRINT ("\r\nEnter any other key to go back to the main menu\r\n");
++    //         }
++    //     }
++    // }
++
++    // APP_PRINT(RTT_CTRL_TEXT_BRIGHT_CYAN "\r\nExiting SPI demo....\r\n" RTT_CTRL_RESET);
+ }
+ 
+ /*******************************************************************************************************************//**

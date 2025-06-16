@@ -1,0 +1,7 @@
+# Optional config: Make noisy and typical "anti-fuzzing" functions return
+# immediately to avoid consuming unnecessary computation resources.
+handlers:
+  SEGGER_RTT_printf:
+  printf:
+
+mock_hardfp: true

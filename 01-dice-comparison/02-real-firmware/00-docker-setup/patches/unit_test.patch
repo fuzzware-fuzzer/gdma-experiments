@@ -1,0 +1,13 @@
+diff --git a/DICE-Evaluation/ARM/Fuzzing/fuzz.py b/DICE-Evaluation/ARM/Fuzzing/fuzz.py
+index 9a78127..5fa9d2e 100755
+--- a/DICE-Evaluation/ARM/Fuzzing/fuzz.py
++++ b/DICE-Evaluation/ARM/Fuzzing/fuzz.py
+@@ -211,7 +211,7 @@ if __name__ == "__main__":
+     # launch fuzzer
+     color_print("launch fuzzer", "blue")
+ 
+-    cmd_afl = [cfg.afl_bin, "-i", cfg.afl_seed, "-o", cfg.afl_output, 
++    cmd_afl = ["timeout", "1d", cfg.afl_bin, "-i", cfg.afl_seed, "-o", cfg.afl_output, 
+         "-t", cfg.afl_timeout, "-QQ", 
+         # used by only non forkserver mode
+         # AFL passes model_if to qemu, so we don't pass it here

@@ -1,0 +1,40 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 5
+
+    # Example 16: MK64F (scatter-gather)
+    descriptors:
+    # The first descriptor is written to MMIO
+    - addr: 0x40009030
+      to:
+        type: buffer
+      known_values:
+        - dma_buf_1
+
+      # 22.3.32 TCD Last Destination Address Adjustment/Scatter Gather Address (DMA_TCDn_DLASTSGA)
+    - addr: 0x40009038 # and other DMA channels, if used. Offsets: 0x18, 0x38, ..., (16 channels)
+      to:
+        typedef: MK64F_lli
+        fields:
+        - offset: 0x10
+          type: pointer
+          to:
+            type: buffer
+          known_values:
+            - dma_buf_2
+        - offset: 0x18
+          type: pointer
+          to:
+            type: MK64F_lli
+
+    known_sizes:
+      dma_buf_1:
+        min: 4
+        max: 4
+      dma_buf_2:
+        min: 4
+        max: 4

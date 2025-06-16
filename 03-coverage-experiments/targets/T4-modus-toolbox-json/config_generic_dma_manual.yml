@@ -1,0 +1,46 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 5
+
+    descriptors:
+    - addr: 0x4028080C # descriptor 0, layout in arch manual page 89
+      to:
+        type: descriptor
+        known_values:
+        - RxDma_Descriptor_0
+        typedef: inf_descriptor
+        fields:
+          # There seems to be an inconsistency between the descriptor type layout
+          # - Reference manual: Figure 10-2. Descriptor structure shows the layout of DESCR_SRC, DESCR_DST, DESCR_CTL, "X Size", "Y Size", DESCR_NEXT_PTR
+          # - C implementation: cy_stc_dma_descriptor_t has 6 members ctl, src, dst, xCtl, yCtl, nextPtr
+          # This leads to the following assumed offsets:
+          # - Reference manual: 4: dst
+          # - C implementation: 8: dst
+
+          # The reason could be the build for the Cortex-M0, instead of the Cortex-M4
+          # We go with the C implementation version here
+          # 8: dst
+          - offset: 0x8
+            type: pointer
+            to:
+              type: buffer
+            known_values:
+              - rx_dma_uart_buffer
+              - "rx_dma_uart_buffer+0x20"
+          - offset: 0x10
+            type: pointer
+            known_values:
+              - RxDma_Descriptor_1
+            to:
+              type: inf_descriptor
+    known_sizes:
+      rx_dma_uart_buffer:
+        min: 0x1
+        max: 0x10
+      "rx_dma_uart_buffer+0x20":
+        min: 0x1
+        max: 0x10

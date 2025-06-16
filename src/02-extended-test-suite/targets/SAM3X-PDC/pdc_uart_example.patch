@@ -1,0 +1,25 @@
+41d40
+< #include <pw_check.h>
+43c42
+< #define BUFFER_SIZE  8
+---
+> #define BUFFER_SIZE  5
+45a45,47
+> #define STRING_HEADER "-- PDC_UART Example --\r\n" \
+> "-- "BOARD_NAME" --\r\n" \
+> "-- Compiled: "__DATE__" "__TIME__" --"STRING_EOL
+48c50
+< uint8_t dma_buf[BUFFER_SIZE];
+---
+> uint8_t g_uc_pdc_buffer[BUFFER_SIZE];
+61d62
+< 	check_password(dma_buf);
+65a67
+> 		pdc_tx_init(g_p_uart_pdc, &g_pdc_uart_packet, NULL);
+101a104,105
+> 	/* Output example information */
+> 	puts(STRING_HEADER);
+108c112
+< 	g_pdc_uart_packet.ul_addr = (uint32_t) dma_buf;
+---
+> 	g_pdc_uart_packet.ul_addr = (uint32_t) g_uc_pdc_buffer;

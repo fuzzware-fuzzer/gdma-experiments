@@ -1,0 +1,19 @@
+include:
+  - config.yml
+
+peripherals:
+  uart_peripheral:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 16
+
+    descriptors:
+    - addr: 0x40009030 # 4000_9030 TCD Destination Address (DMA_TCD1_DADDR)
+      to:
+        type: buffer
+      known_values:
+        - g_rxBuffer
+
+    known_sizes:
+      g_rxBuffer:
+        min: 0x1
+        max: 0x80

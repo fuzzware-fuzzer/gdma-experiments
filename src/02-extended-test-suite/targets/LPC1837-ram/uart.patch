@@ -1,0 +1,179 @@
+diff --git a/opt/workspace/periph_uart/example/src/uart.c b/opt/samples/periph_uart_sg/uart.c
+index ad3d4b0..dbfd0c5 100644
+--- a/opt/workspace/periph_uart/example/src/uart.c
++++ b/opt/samples/periph_uart_sg/uart.c
+@@ -32,6 +32,7 @@
+ 
+ #include "chip.h"
+ #include "board.h"
++#include "pw_check.h"
+ 
+ /*****************************************************************************
+  * Private types/enumerations/variables
+@@ -81,9 +82,28 @@
+ #define _GPDMA_CONN_UART_Rx GPDMA_CONN_UART3_Rx
+ #endif
+ 
++// TODO: insert other definitions and declarations here
++#define DMA_SIZE 	8
++
++typedef struct {
++        uint32_t src;       /**< Source Address */
++        uint32_t dst;       /**< Destination address */
++        uint32_t lli;       /**< Next LLI address, otherwise set to '0' */
++        uint32_t ctrl;       /**< GPDMA Control of this LLI */
++} GPDMA_LLI_Type;
++
++
++uint8_t DMADest_Buffer[DMA_SIZE/2];
++EXPORT_DMA_BUFFER_ALIAS_NUM(DMADest_Buffer, 1);
++// 8 byte padding to have a separation between buffers
++volatile uint8_t pad[8] = {0};
++uint8_t DMADest_Buffer_2[DMA_SIZE/2];
++EXPORT_DMA_BUFFER_ALIAS_NUM(DMADest_Buffer_2, 2);
+ /* Transmit and receive ring buffers */
+ STATIC RINGBUFF_T txring, rxring;
+ 
++
++
+ /* Ring buffer size */
+ #define UART_RB_SIZE 256
+ 
+@@ -150,7 +170,64 @@ static void App_DMA_DeInit(void)
+ 	NVIC_DisableIRQ(DMA_IRQn);
+ }
+ 
++/* PATCHED DMA ROUTINE */
++static void App_DMA_Test(void)
++{
++	DMA_TransferDescriptor_t DMA_LLI_Struct[2], templli;
++
++	App_DMA_Init();
++
++	int error_dbg = 0;
++	int res = -1;
++	Chip_GPDMA_Init(LPC_GPDMA);
++
++	//prep descriptors
++	res = Chip_GPDMA_PrepareDescriptor(LPC_GPDMA, (uint32_t)&DMA_LLI_Struct[0], _GPDMA_CONN_UART_Rx, (uint32_t)DMADest_Buffer, 
++	    							DMA_SIZE, GPDMA_TRANSFERTYPE_P2M_CONTROLLER_DMA, (uint32_t)&DMA_LLI_Struct[1]);
++	if(res == ERROR){
++	    error_dbg = 0x41414141;
++	}
++
++	res = Chip_GPDMA_PrepareDescriptor(LPC_GPDMA, (uint32_t)&DMA_LLI_Struct[1], _GPDMA_CONN_UART_Rx, ((uint32_t)DMADest_Buffer_2),
++	    							DMA_SIZE, GPDMA_TRANSFERTYPE_P2M_CONTROLLER_DMA, 0);
++
++	if(res == ERROR){
++	    	error_dbg = 0x41414141;
++	   }
++
++
++	// There seems to be an (ancient?) bug in the Scatter-gather API?
++	// https://community.nxp.com/t5/LPC-Microcontrollers/GPDMA-DAC-V2-12/m-p/583777
++	// We need to create an LLI with the peripheral value (in this case, src set
++	// to the lookup value, not the pointer)
++
++	// create a temporary LLI for the API call, this can be discarded after the call
++	templli.ctrl=DMA_LLI_Struct[0].ctrl;
++	templli.lli=(uint32_t)&DMA_LLI_Struct[1];
++	templli.src=LPC_GPDMA;
++	templli.dst=DMA_LLI_Struct[0].dst;
++
++	// get a channel number and start the transfer
++	// dmaChannelNumRx = Chip_GPDMA_GetFreeChannel(LPC_GPDMA, _GPDMA_CONN_UART_Rx);
++	dmaChannelNumRx = 0; 
++	isDMATx = DISABLE;
++	channelTC = channelTCErr = 0;
++	Chip_GPDMA_ChannelCmd(LPC_GPDMA, dmaChannelNumRx, DISABLE);
++	res = Chip_GPDMA_SGTransfer(LPC_GPDMA, dmaChannelNumRx, (uint32_t)&templli, GPDMA_TRANSFERTYPE_P2M_CONTROLLER_DMA);
++	if (res != 1){
++	    return;
++	}	
++	while (!channelTC) {}
++	
++	// check the password
++	check_password_scatter_gather((uint32_t *)dma_buf_1, (uint32_t *)dma_buf_2);
++
++	App_DMA_DeInit();
++}
++
++
+ /* DMA routine for example_uart */
++/*
+ static void App_DMA_Test(void)
+ {
+ 	uint8_t receiveBuffer[16];
+@@ -188,6 +265,7 @@ static void App_DMA_Test(void)
+ 
+ 	App_DMA_DeInit();
+ }
++*/
+ 
+ /* Print Welcome Screen Menu subroutine by Interrupt mode */
+ static void Print_Menu_Interrupt(LPC_USART_T *UARTx)
+@@ -361,58 +439,17 @@ int main(void)
+ 
+     /* Disable UART Interrupt */
+     NVIC_DisableIRQ(UARTx_IRQn);
+-
+-	/* Print welcome screen */
+-	Print_Menu_Polling();
+-
+-	exitflag = RESET;
+-	/* Read some data from the buffer */
+-	while (exitflag == RESET) {
+-		len = 0;
+-		while (len == 0) {
+-			len = Chip_UART_Read(LPC_UART, buffer, 1);
+-		}
+-		if (buffer[0] == 27) {
+-			/* ESC key, set exit flag */
+-			Chip_UART_SendBlocking(LPC_UART, uartPolling_menu3, sizeof(uartPolling_menu3));
+-			ret = -1;
+-			exitflag = SET;
+-		}
+-		else if (buffer[0] == 'c') {
+-			Chip_UART_SendBlocking(LPC_UART, uartPolling_menu4, sizeof(uartPolling_menu4));
+-			len = 0;
+-			while (len == 0) {
+-				len = Chip_UART_Read(LPC_UART, buffer, sizeof(buffer));
+-				if ((buffer[0] != '1') && (buffer[0] != '2') && (buffer[0] != '3')) {
+-					len = 0;
+-				}
+-			}
+-			switch (buffer[0]) {
+-			case '1':		/* Polling Mode */
+-				Chip_UART_SendBlocking(LPC_UART, uartPolling_menu5, sizeof(uartPolling_menu5));
+-				break;
+-
+-			case '2':		/* Interrupt Mode */
+-				ret = 2;
+-				/* Exitflag = SET; */
+-				App_Interrupt_Test();
+-				Print_Menu_Polling();
+-				break;
+-
+-			case '3':		/* DMA mode */
+-				ret = 3;
+-				App_DMA_Test();
+-				Print_Menu_Polling();
+-				break;
+-			}
+-		}
+-	}
+-
++    while (1){
++        App_DMA_Test();
++    }
+ 	/* Wait for current transmission complete - THR must be empty */
+ 	while (Chip_UART_CheckBusy(LPC_UART) == SET) {}
+ 
+ 	/* DeInitialize UART0 peripheral */
+ 	Chip_UART_DeInit(LPC_UART);
+ 
++	// Hack: Force padding to not get optimized away
++	__asm__ __volatile__("" :: "m" (pad));
++
+ 	return ret;
+ }

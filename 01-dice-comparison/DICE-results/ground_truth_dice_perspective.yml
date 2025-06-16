@@ -1,0 +1,429 @@
+sample0:
+  # unique name, usually just the name of the elf file
+  name: F103_ADC_SingleConversion_TriggerSW_DMA
+  # board identifier
+  board: f103
+  # name of the .elf file
+  ELF: F103_ADC_SingleConversion_TriggerSW_DMA.elf
+  # mmio base address of the dma controller
+  dma_mmio_base_address: 0x40020000
+  # As there may be multiple buffers, each buffer gets on entry denoted by buf<x>
+  buf0:
+    # there are read (r) and transmit (t) buffers (from the firmwares perspective)
+    type: r
+    # address of the dma buffer
+    buffer_address: 0x2000002c
+    # mmio address containing the dma buffer pointer
+    mmio_dma_ptr: 0x40020014
+    # OPTIONAL: size of the dma buffer
+    buffer_size: 0x4
+
+sample1:
+  name: F103_ADC_SingleConversion_TriggerTimer_DMA
+  board: f103
+  ELF: F103_ADC_SingleConversion_TriggerTimer_DMA.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x200000a4
+    mmio_dma_ptr: 0x40020014
+    buffer_size: 0x40
+
+
+sample2:
+  name: F103_ChibiOS_ADC_slider
+  board: f103
+  ELF: F103_ChibiOS_ADC_slider.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x20001348
+    mmio_dma_ptr: 0x40020014
+    buffer_size: 0x28
+
+sample3:
+  name: F103_ChibiOS_SPI
+  board: f103
+  ELF: F103_ChibiOS_SPI.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x200012f8  
+    mmio_dma_ptr: 0x40020028
+    buffer_size: 0x200
+  buf1:
+    type: t
+    buffer_address: 0x20001888  
+    mmio_dma_ptr: 0x4002003c
+    buffer_size: 0x200
+
+sample4:
+  name: F103_ChibiOS_UART
+  board: f103
+  ELF: F103_ChibiOS_UART.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: t
+    buffer_address: 0x20000854  
+    mmio_dma_ptr: 0x40020078
+    buffer_size: 0x4
+
+sample5:
+  name: F103_ChibiOS_acelerometer
+  board: f103
+  ELF: F103_ChibiOS_acelerometer.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: t
+    buffer_address: 0x20001108  
+    mmio_dma_ptr: 0x40020078
+    buffer_size: 0x8
+
+sample6:
+  name: F103_I2C_OneBoard_AdvCommunication_DMAAndIT
+  board: f103
+  ELF: F103_I2C_OneBoard_AdvCommunication_DMAAndIT.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x200000e0  
+    mmio_dma_ptr: 0x40020064
+    buffer_size: 0x1
+
+sample7:
+  name: F103_I2C_OneBoard_Communication_DMAAndIT
+  board: f103
+  ELF: F103_I2C_OneBoard_Communication_DMAAndIT.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: t
+    buffer_address: 0x2000000c  
+    mmio_dma_ptr: 0x4002004c
+    buffer_size: 0x7
+
+sample8:
+  name: F103_I2C_TwoBoards_ComDMA
+  board: f103
+  ELF: F103_I2C_TwoBoards_ComDMA.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x200001dc  
+    mmio_dma_ptr: 0x4002008c
+    buffer_size: 0x2
+
+sample9:
+  name: F103_I2C_TwoBoards_MasterTx_SlaveRx_DMA
+  board: f103
+  ELF: F103_I2C_TwoBoards_MasterTx_SlaveRx_DMA.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: t
+    buffer_address: 0x20000030  
+    mmio_dma_ptr: 0x4002008c
+    buffer_size: 0x7
+  buf1:
+    type: t
+    buffer_address: 0x2000000d  
+    mmio_dma_ptr: 0x40020078
+    buffer_size: 0x7
+
+
+sample10:
+  name: F103_SPI_FullDuplex_ComDMA
+  board: f103
+  ELF: F103_SPI_FullDuplex_ComDMA.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x20000190  
+    mmio_dma_ptr: 0x40020050
+    buffer_size: 0x1
+  buf1:
+    type: r
+    buffer_address: 0x20000018  
+    mmio_dma_ptr: 0x40020064
+    buffer_size: 0x1
+
+sample11:
+  name: F103_SPI_OneBoard_HalfDuplex_DMA
+  board: f103
+  ELF: F103_SPI_OneBoard_HalfDuplex_DMA.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x20000004   
+    mmio_dma_ptr: 0x4002003c
+    buffer_size: 0x1
+  buf1:
+    type: r
+    buffer_address: 0x200000b7   
+    mmio_dma_ptr: 0x40020064
+    buffer_size: 0x1
+
+sample12:
+  name: F103_SPI_OneBoard_HalfDuplex_DMA_Init
+  board: f103
+  ELF: F103_SPI_OneBoard_HalfDuplex_DMA_Init.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x200000f0   
+    mmio_dma_ptr: 0x40020050
+    buffer_size: 0x1
+  buf1:
+    type: r
+    buffer_address: 0x20000004   
+    mmio_dma_ptr: 0x4002003c
+    buffer_size: 0x1
+
+sample13:
+  name: F103_SPI_TwoBoards_FullDuplex_DMA
+  board: f103
+  ELF: F103_SPI_TwoBoards_FullDuplex_DMA.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x200000bb
+    mmio_dma_ptr: 0x40020050
+    buffer_size: 0x1
+  buf1:
+    type: r
+    buffer_address: 0x20000005
+    mmio_dma_ptr: 0x40020064
+    buffer_size: 0x1
+
+sample14:
+  name: F103_UART_HyperTerminal_DMA
+  board: f103
+  ELF: F103_UART_HyperTerminal_DMA.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: t
+    buffer_address: 0x200001e8
+    mmio_dma_ptr: 0x40020064
+    buffer_size: 0xa
+  buf1:
+    type: t
+    buffer_address: 0x20000014
+    mmio_dma_ptr: 0x40020050
+    buffer_size: 0x62
+
+sample15:
+  name: F103_UART_TwoBoards_ComDMA
+  board: f103
+  ELF: F103_UART_TwoBoards_ComDMA.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: t
+    buffer_address: 0x200001a0
+    mmio_dma_ptr: 0x40020064
+    buffer_size: 0x99
+  buf1:
+    type: t
+    buffer_address: 0x20000014
+    mmio_dma_ptr: 0x40020050
+    buffer_size: 0x9a
+
+sample16:
+  name: F103_USART_Communication_TxRx_DMA
+  board: f103
+  ELF: F103_USART_Communication_TxRx_DMA.elf
+  dma_mmio_base_address: 0x40020000
+  buf0:
+    type: r
+    buffer_address: 0x20000028
+    mmio_dma_ptr: 0x40020078
+    buffer_size: 0x1
+
+sample17:
+  name: F103_USART_SyncCommunication_FullDuplex_DMA
+  board: f103
+  ELF: F103_USART_SyncCommunication_FullDuplex_DMA.elf
+  dma_mmio_base_address: 0x40020000
+  #USART
+  buf0:
+    type: t
+    buffer_address: 0x200000c5
+    mmio_dma_ptr: 0x40020064
+    buffer_size: 0x4e
+  buf1:
+    type: r
+    buffer_address: 0x20000004
+    mmio_dma_ptr: 0x40020050
+    buffer_size: 0x1
+  #SPI
+  buf2:
+    type: r
+    buffer_address: 0x20000113
+    mmio_dma_ptr: 0x40020028
+    buffer_size: 0x1
+  buf3:
+    type: t
+    buffer_address: 0x20000054
+    mmio_dma_ptr: 0x4002003c
+    buffer_size: 0x4e
+
+sample18:
+  name: F429_ChibiOS_ADC_slider
+  board: f429
+  ELF: F429_ChibiOS_ADC_slider.elf
+  dma_mmio_base_address: 0x40026400
+  buf0:
+    type: t
+    buffer_address: 0x20001374
+    mmio_dma_ptr: 0x4002647c
+    buffer_size: 0x28
+
+sample19:
+  name: L1521_ChibiOS_SPI
+  board: l1521
+  ELF: L1521_ChibiOS_SPI.elf
+  dma_mmio_base_address: 0x40026000
+  DMA2:
+  buf0:
+    type: r
+    buffer_address: 0x200012f8
+    mmio_dma_ptr: 0x40020050
+    buffer_size: 0x200
+  buf1:
+    type: t
+    buffer_address: 0x20001888
+    mmio_dma_ptr: 0x40020064
+    buffer_size: 0x200
+
+sample20:
+  name: L1521_ChibiOS_UART
+  board: l1521
+  ELF: L1521_ChibiOS_UART.elf
+  dma_mmio_base_address: 0x40026000
+  buf0:
+    type: r
+    buffer_address: 0x20000838
+    mmio_dma_ptr: 0x40026064
+    buffer_size: 0x2
+
+# M2M case, where both buffers reside in the BSS
+sample21:
+  name: LPC1837_PDMA_memory
+  board: lpc1837
+  ELF: LPC1837_PDMA_memory.elf
+  dma_mmio_base_address: 0x40002000
+  buf0:
+    type: r
+    buffer_address: 0x10000088 
+    mmio_dma_ptr: 0x40002104
+    buffer_size: 0x10
+  buf1:
+    type: r
+    buffer_address: 0x10000078 
+    mmio_dma_ptr: 0x40002100
+    buffer_size: 0x10
+
+sample22:
+  name: NRF51822_SPI_slave
+  board: nrf51822
+  ELF: NRF51822_SPI_slave.elf
+  dma_mmio_base_address: -1
+
+sample23:
+  name: NRF51822_console_bleprph
+  board: nrf51822
+  ELF: NRF51822_console_bleprph.elf
+  dma_mmio_base_address: -1
+  
+sample24:
+  name: NRF52832_SPI_master
+  board: nrf52832
+  ELF: NRF52832_SPI_master.elf
+  dma_mmio_base_address: -1
+
+sample25:
+  name: NRF52832_SPI_slave
+  board: nrf52832
+  ELF: NRF52832_SPI_slave.elf
+  dma_mmio_base_address: -1
+
+sample26:
+  name: NRF52832_console_bleprph
+  board: nrf52842
+  ELF: NRF52832_console_bleprph.elf
+  dma_mmio_base_address: -1
+
+sample27:
+  name: NRF52832_uart
+  board: nrf52832
+  ELF: NRF52832_uart.elf
+  dma_mmio_base_address: -1
+
+# Again M2M
+sample28:
+  name: NUC123_PDMA_memory
+  board: nuc123
+  ELF: NUC123_PDMA_memory.elf
+  dma_mmio_base_address: 0x50008000   
+  buf0:
+    type: t
+    buffer_address: 0x200001cc 
+    mmio_dma_ptr: 0x50008008
+    buffer_size: 0x100
+  buf1:
+    type: t 
+    buffer_address: 0x200000cc 
+    mmio_dma_ptr: 0x50008004
+    buffer_size: 0x100
+
+sample29:
+  name: NUC123_PDMA_usart
+  board: nuc123
+  ELF: NUC123_PDMA_usart.elf
+  dma_mmio_base_address: 0x50008000   
+  buf0:
+    type: t
+    buffer_address: 0x20000114 
+    mmio_dma_ptr: 0x50008008
+    buffer_size: 0x40
+  buf1:
+    type: t
+    buffer_address: 0x200000d0
+    mmio_dma_ptr: 0x50008104
+    buffer_size: 0x40
+
+sample30:
+  name: SAM3X_ADC_PDC.ino
+  board: sam3x
+  ELF: SAM3X_ADC_PDC.ino.elf
+  dma_mmio_base_address: -1
+
+sample31:
+  name: SAM3X_spi_spi_dmac_slave_example_flash
+  board: sam3x
+  ELF: SAM3X_spi_spi_dmac_slave_example_flash.elf
+  dma_mmio_base_address: 0x400c4000   
+  buf0:
+    type: t
+    buffer_address: 0x2007012c 
+    mmio_dma_ptr: 0x400c4064
+    buffer_size: 0x4
+  buf1:
+    type: t 
+    buffer_address: 0x2007012c 
+    mmio_dma_ptr: 0x400c4040
+    buffer_size: 0x4
+
+sample32:
+  name: SAM3X_usart_dmac_example
+  board: sam3x
+  ELF: SAM3X_usart_dmac_example.elf
+  dma_mmio_base_address: 0x400c4000   
+  buf0:
+    type: t 
+    buffer_address: 0x20070a04 
+    mmio_dma_ptr: 0x400c4040
+    buffer_size: 0x20
+  buf1:
+    type: t 
+    buffer_address: 0x20070a04 
+    mmio_dma_ptr: 0x400c4064
+    buffer_size: 0x4
+

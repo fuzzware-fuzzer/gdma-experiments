@@ -1,0 +1,12 @@
+mmio_models:
+  set:
+    # This manual model is required due to an MMIO modeling bug in Fuzzware
+    dma_transfer_complete_status:
+      access_size: 0x4
+      pc: 0xffffffff
+      addr: 0x40020000
+      vals:
+      - 0x0
+      # The originally modeled value is a single-bit option such as 0x8000000, depending on the pc within HAL_DMA_IRQHandler
+      # This is generated in case an interrupt arrives early and HAL_DMA_IRQHandler gets passed a NULL pointer as the hdma argument
+      - 0xffffffff

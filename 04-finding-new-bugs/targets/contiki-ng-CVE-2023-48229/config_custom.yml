@@ -1,0 +1,57 @@
+include:
+  - syms.yml
+# Performance increase: Make noisy and typical "anti-fuzzing" functions return
+# immediately to avoid consuming unnecessary computation resources.
+handlers:
+  # Skip stack_check_init to avoid MMIO timeout
+  stack_check_init:
+
+  # Skip output functions
+  printf:
+  puts:
+  dbg_putchar:
+
+  # Skip unrelated, but crashing interrupt handler function
+  GPIOTE_IRQHandler:
+  # nrfx_power_irq_handler crashes early due to missing NULL check, e.g. lr==0x00006707
+  nrfx_power_irq_handler:
+
+  # We also skip USB functionality (dcd_int_handler, tud_task)
+  dcd_int_handler:
+  tud_task:
+
+# We let the fuzzer choose an interrupt to trigger whenever the firmware is idle
+# The default behavior would be to trigger an interrupt every 1000 basic blocks
+interrupt_triggers:
+  idle_interrupt:
+    fuzz_mode: round_robin
+    addr: platform_idle
+
+memory_map:
+  irq_ret:
+    base_addr: 0xfffff000
+    permissions: --x
+    size: 0x1000
+  mmio:
+    base_addr: 0x40000000
+    permissions: rw-
+    size: 0x20000000
+  nvic:
+    base_addr: 0xe0000000
+    permissions: rw-
+    size: 0x10000000
+  ram:
+    base_addr: 0x20000000
+    permissions: rw-
+    size: 0x100000
+  ficr:
+    # Factory information configuration registers
+    base_addr: 0x10000000
+    permissions: r--
+    size: 0x1000
+  text:
+    base_addr: 0x1000
+    file: hello-world.bin
+    ivt_offset: 0x0
+    permissions: r-x
+    size: 0x1031c

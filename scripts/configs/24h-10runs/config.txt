@@ -1,0 +1,9 @@
+24h
+50
+10
+GPSReceiver
+GuitarPedal
+MIDISynthetizer
+Modbus
+SolderingStation
+StepperMotor

@@ -1,0 +1,15 @@
+diff --git a/subsys/net/l2/ieee802154/ieee802154_6lo_fragment.c b/subsys/net/l2/ieee802154/ieee802154_6lo_fragment.c
+index 8e135e7f0e7..0183d9dec15 100644
+--- a/subsys/net/l2/ieee802154/ieee802154_6lo_fragment.c
++++ b/subsys/net/l2/ieee802154/ieee802154_6lo_fragment.c
+@@ -315,8 +315,8 @@ static inline struct frag_cache *set_reass_cache(struct net_pkt *pkt, uint16_t s
+ 		cache[i].tag = tag;
+ 		cache[i].used = true;
+ 
+-		k_work_init_delayable(&cache[i].timer, reass_timeout);
+-		k_work_reschedule(&cache[i].timer, FRAG_REASSEMBLY_TIMEOUT);
++		//k_work_init_delayable(&cache[i].timer, reass_timeout);
++		//k_work_reschedule(&cache[i].timer, FRAG_REASSEMBLY_TIMEOUT);
+ 		return &cache[i];
+ 	}
+ 

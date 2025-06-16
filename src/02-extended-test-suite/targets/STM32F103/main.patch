@@ -1,0 +1,103 @@
+diff --git a/Projects/STM32F103RB-Nucleo/Examples_LL/USART/USART_Communication_TxRx_DMA/Src/main.c b/Projects/STM32F103RB-Nucleo/Examples_LL/USART/USART_Communication_TxRx_DMA/Src/main.c
+index 12c6d64..9193342 100644
+--- a/Projects/STM32F103RB-Nucleo/Examples_LL/USART/USART_Communication_TxRx_DMA/Src/main.c
++++ b/Projects/STM32F103RB-Nucleo/Examples_LL/USART/USART_Communication_TxRx_DMA/Src/main.c
+@@ -8,18 +8,20 @@
+   ******************************************************************************
+   * @attention
+   *
+-  * Copyright (c) 2016 STMicroelectronics.
+-  * All rights reserved.
++  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
++  * All rights reserved.</center></h2>
+   *
+-  * This software is licensed under terms that can be found in the LICENSE file
+-  * in the root directory of this software component.
+-  * If no LICENSE file comes with this software, it is provided AS-IS.
++  * This software component is licensed by ST under BSD 3-Clause license,
++  * the "License"; You may not use this file except in compliance with the
++  * License. You may obtain a copy of the License at:
++  *                        opensource.org/licenses/BSD-3-Clause
+   *
+   ******************************************************************************
+   */
+ 
+ /* Includes ------------------------------------------------------------------*/
+ #include "main.h"
++#include "pw_check.h"
+ 
+ /** @addtogroup STM32F1xx_LL_Examples
+   * @{
+@@ -42,9 +44,14 @@ uint8_t ubNbDataToTransmit = sizeof(aTxBuffer);
+ __IO uint8_t ubTransmissionComplete = 0;
+ 
+ /* Buffer used for reception */
+-const uint8_t aStringToReceive[] = "END";
++#define BUF_SIZE	8
++const uint8_t aStringToReceive[] = "Password";
+ uint8_t ubNbDataToReceive = sizeof(aStringToReceive) - 1;
+-uint8_t aRxBuffer[sizeof(aStringToReceive) - 1];
++uint8_t aRxBuffer[BUF_SIZE];
++volatile uint8_t pad[8] = {0};
++// ALIAS PATCH
++EXPORT_DMA_BUFFER_ALIAS(aRxBuffer);
++
+ __IO uint8_t ubReceptionComplete = 0;
+ 
+ /* Private function prototypes -----------------------------------------------*/
+@@ -70,6 +77,7 @@ uint8_t  Buffercmp8(uint8_t* pBuffer1, uint8_t* pBuffer2, uint8_t BufferLength);
+   */
+ int main(void)
+ {
++
+   /* Configure the system clock to 72 MHz */
+   SystemClock_Config();
+ 
+@@ -152,7 +160,7 @@ void Configure_DMA(void)
+                          LL_USART_DMA_GetRegAddr(USART2),
+                          (uint32_t)aRxBuffer,
+                          LL_DMA_GetDataTransferDirection(DMA1, LL_DMA_CHANNEL_6));
+-  LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_6, ubNbDataToReceive);
++  LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_6, BUF_SIZE);
+ 
+   /* (5) Enable DMA transfer complete/error interrupts  */
+   LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_7);
+@@ -370,17 +378,22 @@ void WaitAndCheckEndOfTransfer(void)
+   /* Disable DMA1 Rx Channel */
+   LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_6);
+ 
++
++  // PATCH
++  check_password((void *) dma_buf);
++
++
+   /* 3 - Compare received string to expected one */
+-  if(Buffercmp8((uint8_t*)aStringToReceive, (uint8_t*)aRxBuffer, ubNbDataToReceive))
+-  {
+-    /* Processing Error */
+-    LED_Blinking(LED_BLINK_ERROR);    
+-  }
+-  else
+-  {
+-    /* Turn On Led if data are well received */
+-    LED_On();
+-  }
++  //if(Buffercmp8((uint8_t*)aStringToReceive, (uint8_t*)aRxBuffer, ubNbDataToReceive))
++  //{
++  //  /* Processing Error */
++  //  LED_Blinking(LED_BLINK_ERROR);    
++  //}
++  //else
++  //{
++  //  /* Turn On Led if data are well received */
++  //  LED_On();
++  //}
+ }
+ 
+ /**
+@@ -540,3 +553,5 @@ void assert_failed(uint8_t *file, uint32_t line)
+ /**
+   * @}
+   */
++
++/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -1,0 +1,262 @@
+interrupt_triggers:
+  trigger:
+    every_nth_tick: 0x3e8
+    fuzz_mode: round_robin
+memory_map:
+  irq_ret:
+    base_addr: 0xfffff000
+    permissions: --x
+    size: 0x1000
+  mmio:
+    base_addr: 0x40000000
+    permissions: rw-
+    size: 0x20000000
+  nvic:
+    base_addr: 0xe0000000
+    permissions: rw-
+    size: 0x10000000
+  ram:
+    base_addr: 0x20000000
+    permissions: rw-
+    size: 0x100000
+  text:
+    base_addr: 0x0
+    file: NUC123_PDMA_memory.bin
+    is_entry: true
+    ivt_offset: 0x0
+    permissions: r-x
+    size: 0x11de4
+symbols:
+  0x0:
+  - ./CMSIS/CMSIS/gcc/startup_NUC123.o
+  - crtstuff.c
+  - /home/alejandro/local/gcc-arm-none-eabi-6-2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/crt0.o
+  - main.c
+  - clk.c
+  - pdma.c
+  - retarget.c
+  - sys.c
+  - uart.c
+  - _syscalls.c
+  - system_NUC123.c
+  - _udivsi3.o
+  - _dvmd_tls.o
+  - errno.c
+  - exit.c
+  - init.c
+  - memset.c
+  - printf.c
+  - puts.c
+  - wbuf.c
+  - wsetup.c
+  - fflush.c
+  - findfp.c
+  - fwalk.c
+  - makebuf.c
+  - nano-mallocr.c
+  - nano-mallocr.c
+  - nano-vfprintf.c
+  - nano-vfprintf_i.c
+  - sbrkr.c
+  - stdio.c
+  - writer.c
+  - closer.c
+  - fstatr.c
+  - isattyr.c
+  - lseekr.c
+  - memchr-stub.c
+  - mlock.c
+  - readr.c
+  - sbrk.c
+  - _exit.c
+  - /home/alejandro/local/gcc-arm-none-eabi-6-2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crti.o
+  - /home/alejandro/local/gcc-arm-none-eabi-6-2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtn.o
+  - impure.c
+  - crtstuff.c
+  - __Vectors
+  0xc0:
+  - __Vectors_Size
+  - __Vectors_End
+  0xc1: __do_global_dtors_aux
+  0xe9: frame_dummy
+  0x100: Heap_Size
+  0x121:
+  - _mainCRTStartup
+  - _start
+  0x199: PDMA_IRQHandler
+  0x231: SYS_Init
+  0x2c5: UART0_Init
+  0x2e1: main
+  0x391: CLK_SetHCLK
+  0x3cd: CLK_SetModuleClock
+  0x400: Stack_Size
+  0x479: CLK_EnableXtalRC
+  0x489: CLK_EnableModuleClock
+  0x4a5: CLK_EnablePLL
+  0x639: CLK_SetCoreClock
+  0x6b5: CLK_WaitClockReady
+  0x6b9: PDMA_Open
+  0x6c9: PDMA_Close
+  0x6d5: PDMA_SetTransferCnt
+  0x70d: PDMA_SetTransferAddr
+  0x72d: PDMA_Trigger
+  0x745: PDMA_EnableInt
+  0x759: Hard_Fault_Handler
+  0x7c9: HardFault_Handler
+  0x7e9: _write
+  0x821: _read
+  0x839: SYS_ResetModule
+  0x859: CLK_GetPLLClockFreq
+  0x8b5: UART_Open
+  0x945: _close
+  0x955: _fstat
+  0x965: _isatty
+  0x973: _lseek
+  0x985: Reset_Handler
+  0x9ad:
+  - GPCDF_IRQHandler
+  - I2C0_IRQHandler
+  - SysTick_Handler
+  - PendSV_Handler
+  - NMI_Handler
+  - I2C1_IRQHandler
+  - UART1_IRQHandler
+  - PS2_IRQHandler
+  - CAN1_IRQHandler
+  - UART0_IRQHandler
+  - USBD_IRQHandler
+  - SPI1_IRQHandler
+  - TMR0_IRQHandler
+  - ACMP_IRQHandler
+  - I2S_IRQHandler
+  - RTC_IRQHandler
+  - PWRWU_IRQHandler
+  - EINT1_IRQHandler
+  - PWMA_IRQHandler
+  - Default_Handler
+  - ADC_IRQHandler
+  - TMR2_IRQHandler
+  - BOD_IRQHandler
+  - SPI2_IRQHandler
+  - WDT_IRQHandler
+  - SVC_Handler
+  - SC012_IRQHandler
+  - GPAB_IRQHandler
+  - EINT0_IRQHandler
+  - CAN0_IRQHandler
+  - TMR3_IRQHandler
+  - SPI0_IRQHandler
+  - SPI3_IRQHandler
+  - TMR1_IRQHandler
+  0x9b1: SH_DoCommand
+  0x9b9: SystemCoreClockUpdate
+  0xa65: SystemInit
+  0xa68: .udivsi3_skip_div0_test
+  0xa69:
+  - __udivsi3
+  - __aeabi_uidiv
+  0xb75: __aeabi_uidivmod
+  0xb7d:
+  - __aeabi_ldiv0
+  - __aeabi_idiv0
+  0xb81: __errno
+  0xb8d: exit
+  0xbb9: __libc_init_array
+  0xc01: memset
+  0xc11:
+  - printf
+  - iprintf
+  0xc45: _puts_r
+  0xd05: puts
+  0xd19: __swbuf_r
+  0xdc5: __swsetup_r
+  0xeb1: __sflush_r
+  0xfc5: _fflush_r
+  0x101d: _cleanup_r
+  0x102d: std.isra.0
+  0x1075: __sfmoreglue
+  0x10a1: __sinit
+  0x1109: __sfp
+  0x1189: _fwalk_reent
+  0x11cd: __swhatbuf_r
+  0x121d: __smakebuf_r
+  0x12a5: _free_r
+  0x1339: _malloc_r
+  0x13f5: __sfputc_r
+  0x141f: __sfputs_r
+  0x1445:
+  - _vfiprintf_r
+  - _vfprintf_r
+  0x167d: _printf_common
+  0x1759: _printf_i
+  0x198d: _sbrk_r
+  0x19b1: __sread
+  0x19d9: __swrite
+  0x1a11: __sseek
+  0x1a3d: __sclose
+  0x1a49: _write_r
+  0x1a71: _close_r
+  0x1a95: _fstat_r
+  0x1ab9: _isatty_r
+  0x1add: _lseek_r
+  0x1b05: memchr
+  0x1b1b: __malloc_lock
+  0x1b1d: __malloc_unlock
+  0x1b21: _read_r
+  0x1b49: _sbrk
+  0x1b65: _exit
+  0x1b69: _init
+  0x1b75: _fini
+  0x1c9c: _global_impure_ptr
+  0x1ca0: __sf_fake_stderr
+  0x1cc0: __sf_fake_stdin
+  0x1ce0: __sf_fake_stdout
+  0x1d34:
+  - __EH_FRAME_BEGIN__
+  - __FRAME_END__
+  0x1d38: __exidx_start
+  0x1d40:
+  - __exidx_end
+  - __etext
+  0x20000000:
+  - __data_start__
+  - PDMA_TEST_LENGTH
+  0x20000004: u32IsTestOver
+  0x20000008: CyclesPerUs
+  0x2000000c: PllClock
+  0x20000010: SystemCoreClock
+  0x20000014: gau32ClkSrcTbl
+  0x20000034: _impure_ptr
+  0x20000038: impure_data
+  0x20000098:
+  - __frame_dummy_init_array_entry
+  - __preinit_array_end
+  - __init_array_start
+  - __preinit_array_start
+  0x2000009c:
+  - __do_global_dtors_aux_fini_array_entry
+  - __init_array_end
+  0x200000a0:
+  - __JCR_LIST__
+  - __JCR_END__
+  0x200000a4:
+  - completed.8663
+  - __bss_start__
+  - __data_end__
+  0x200000a8: object.8668
+  0x200000c0: __malloc_free_list
+  0x200000c4: __malloc_sbrk_start
+  0x200000c8: heap_end.4116
+  0x200000cc: SrcArray
+  0x200001cc: DestArray
+  0x200002cc: errno
+  0x200002d0:
+  - __HeapBase
+  - end
+  - __bss_end__
+  - __end__
+  0x200003d0: __HeapLimit
+  0x20004c00: __StackLimit
+  0x20005000:
+  - __StackTop
+  - __stack

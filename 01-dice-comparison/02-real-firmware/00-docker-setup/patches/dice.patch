@@ -1,0 +1,45 @@
+diff --git a/DICE-Evaluation/ARM/DICE-P2IM-Utilities/me.py b/DICE-Evaluation/ARM/DICE-P2IM-Utilities/me.py
+index d7dffdf..6056a71 100755
+--- a/DICE-Evaluation/ARM/DICE-P2IM-Utilities/me.py
++++ b/DICE-Evaluation/ARM/DICE-P2IM-Utilities/me.py
+@@ -179,6 +179,8 @@ def qemu_run(cmd, retry_num, stage):
+     error_rv = {2: {0x24: "Cannot find SR Model which is supposed to exist"}}
+ 
+     run_num = 0
++    print("===============")
++    print(cmd)
+     while run_num < retry_num:
+         with open(os.devnull, 'w') as devnull:
+             # TODO may need timeout
+diff --git a/DICE-Evaluation/ARM/Fuzzing/fuzz.py b/DICE-Evaluation/ARM/Fuzzing/fuzz.py
+index 9a78127..5fa9d2e 100755
+--- a/DICE-Evaluation/ARM/Fuzzing/fuzz.py
++++ b/DICE-Evaluation/ARM/Fuzzing/fuzz.py
+@@ -211,7 +211,7 @@ if __name__ == "__main__":
+     # launch fuzzer
+     color_print("launch fuzzer", "blue")
+ 
+-    cmd_afl = [cfg.afl_bin, "-i", cfg.afl_seed, "-o", cfg.afl_output, 
++    cmd_afl = ["timeout", "1d", cfg.afl_bin, "-i", cfg.afl_seed, "-o", cfg.afl_output, 
+         "-t", cfg.afl_timeout, "-QQ", 
+         # used by only non forkserver mode
+         # AFL passes model_if to qemu, so we don't pass it here
+diff --git a/DICE-Evaluation/ARM/Unit-Test/runbatch.py b/DICE-Evaluation/ARM/Unit-Test/runbatch.py
+index c27d544..1ed5687 100755
+--- a/DICE-Evaluation/ARM/Unit-Test/runbatch.py
++++ b/DICE-Evaluation/ARM/Unit-Test/runbatch.py
+@@ -20,7 +20,7 @@ from os import getcwd
+ from os.path import isfile, join
+ import subprocess
+ 
+-firmpath="./firmware"
++firmpath="./Firmware/Binaries-DICE/"
+ runpath = getcwd()+"/run.py"
+ out_path = "./revision2"
+ 
+@@ -38,4 +38,4 @@ for f in files:
+         if key in f:
+             print("Processing: {}".format(f) )
+             subprocess.call([runpath, mcu, firmpath +"/"+f, out_path])
+-           break
++            break

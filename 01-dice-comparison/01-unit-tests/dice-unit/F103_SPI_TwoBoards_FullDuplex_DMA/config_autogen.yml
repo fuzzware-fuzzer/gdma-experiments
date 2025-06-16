@@ -1,0 +1,163 @@
+interrupt_triggers:
+  trigger:
+    every_nth_tick: 0x3e8
+    fuzz_mode: round_robin
+memory_map:
+  irq_ret:
+    base_addr: 0xfffff000
+    permissions: --x
+    size: 0x1000
+  mmio:
+    base_addr: 0x40000000
+    permissions: rw-
+    size: 0x20000000
+  nvic:
+    base_addr: 0xe0000000
+    permissions: rw-
+    size: 0x10000000
+  ram:
+    base_addr: 0x20000000
+    permissions: rw-
+    size: 0x100000
+  text:
+    base_addr: 0x8000000
+    file: F103_SPI_TwoBoards_FullDuplex_DMA.bin
+    is_entry: true
+    ivt_offset: 0x0
+    permissions: r-x
+    size: 0x10848
+symbols:
+  0x0:
+  - Example/SW4STM32/startup_stm32f103xb.o
+  - crtstuff.c
+  - system_stm32f1xx.c
+  - stm32f1xx_ll_utils.c
+  - main.c
+  - stm32f1xx_it.c
+  - init.c
+  - /home/alejandro/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crti.o
+  - /home/alejandro/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtn.o
+  0x200: _Min_Heap_Size
+  0x400: _Min_Stack_Size
+  0x8000000: g_pfnVectors
+  0x800010d: __do_global_dtors_aux
+  0x8000131: frame_dummy
+  0x800014d: SystemInit
+  0x8000199: LL_Init1msTick
+  0x80001b5: LL_mDelay
+  0x80001c9: LL_SetSystemCoreClock
+  0x80001d5: Reset_Handler
+  0x80001d8: CopyDataInit
+  0x80001e0: LoopCopyDataInit
+  0x80001ee: FillZerobss
+  0x80001f4: LoopFillZerobss
+  0x800021c:
+  - Infinite_Loop
+  - Default_Handler
+  0x800021d:
+  - RTC_Alarm_IRQHandler
+  - EXTI2_IRQHandler
+  - TIM1_CC_IRQHandler
+  - PVD_IRQHandler
+  - EXTI3_IRQHandler
+  - EXTI0_IRQHandler
+  - I2C2_EV_IRQHandler
+  - ADC1_2_IRQHandler
+  - SPI1_IRQHandler
+  - TAMPER_IRQHandler
+  - USART3_IRQHandler
+  - RTC_IRQHandler
+  - DMA1_Channel7_IRQHandler
+  - CAN1_RX1_IRQHandler
+  - TIM4_IRQHandler
+  - I2C1_EV_IRQHandler
+  - DMA1_Channel6_IRQHandler
+  - TIM3_IRQHandler
+  - RCC_IRQHandler
+  - TIM1_TRG_COM_IRQHandler
+  - DMA1_Channel1_IRQHandler
+  - EXTI9_5_IRQHandler
+  - SPI2_IRQHandler
+  - EXTI4_IRQHandler
+  - USB_LP_CAN1_RX0_IRQHandler
+  - USB_HP_CAN1_TX_IRQHandler
+  - DMA1_Channel3_IRQHandler
+  - TIM1_UP_IRQHandler
+  - WWDG_IRQHandler
+  - TIM2_IRQHandler
+  - TIM1_BRK_IRQHandler
+  - EXTI1_IRQHandler
+  - USART2_IRQHandler
+  - I2C2_ER_IRQHandler
+  - DMA1_Channel2_IRQHandler
+  - CAN1_SCE_IRQHandler
+  - FLASH_IRQHandler
+  - USART1_IRQHandler
+  - I2C1_ER_IRQHandler
+  - USBWakeUp_IRQHandler
+  0x8000221: LL_APB2_GRP1_EnableClock
+  0x800023d: LL_GPIO_SetPinMode
+  0x800026d: LL_GPIO_SetPinSpeed.constprop.12
+  0x800029d: Configure_DMA
+  0x800038d: Configure_SPI
+  0x8000481: Activate_SPI
+  0x80004a9: LED_Init
+  0x80004c5: LED_Blinking
+  0x80004e1: UserButton_Init
+  0x800054d: Buffercmp8
+  0x8000571: WaitAndCheckEndOfTransfer
+  0x80005d1: SystemClock_Config
+  0x8000661: main
+  0x800068d: UserButton_Callback
+  0x8000699: DMA1_ReceiveComplete_Callback
+  0x80006a5: DMA1_TransmitComplete_Callback
+  0x80006b1: SPI2_TransferError_Callback
+  0x80006d1: NMI_Handler
+  0x80006d3: HardFault_Handler
+  0x80006d5: MemManage_Handler
+  0x80006d7: BusFault_Handler
+  0x80006d9: UsageFault_Handler
+  0x80006db: SVC_Handler
+  0x80006dd: DebugMon_Handler
+  0x80006df: PendSV_Handler
+  0x80006e1: SysTick_Handler
+  0x80006e5: EXTI15_10_IRQHandler
+  0x80006fd: DMA1_Channel4_IRQHandler
+  0x8000721: DMA1_Channel5_IRQHandler
+  0x8000745: __libc_init_array
+  0x800078c: __EH_FRAME_BEGIN__
+  0x800078d: _init
+  0x8000799: _fini
+  0x80007a4:
+  - __frame_dummy_init_array_entry
+  - __preinit_array_end
+  - __init_array_start
+  - __preinit_array_start
+  - __exidx_end
+  - _etext
+  - __exidx_start
+  0x80007a8:
+  - __do_global_dtors_aux_fini_array_entry
+  - __init_array_end
+  0x80007ac: _sidata
+  0x20000000:
+  - SystemCoreClock
+  - _sdata
+  0x20000004: ubNbDataToReceive
+  0x20000005: aTxBuffer
+  0x2000009a: ubNbDataToTransmit
+  0x2000009c:
+  - completed.8655
+  - _sbss
+  - __bss_start__
+  - _edata
+  0x200000a0: object.8660
+  0x200000b8: ubTransmissionComplete
+  0x200000b9: ubReceptionComplete
+  0x200000ba: ubButtonPress
+  0x200000bb: aRxBuffer
+  0x20000150:
+  - _ebss
+  - __bss_end__
+  0x20005000: _estack
+  0xf108f85f: BootRAM

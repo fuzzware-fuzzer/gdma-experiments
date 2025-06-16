@@ -1,0 +1,42 @@
+memory_map:
+  errata:
+    # Config memory that is used by the Nordic SDK
+    base_addr: 0xf0000000
+    permissions: r--
+    size: 0x1000
+
+# Optional config: Make the emulator trigger an interrupt whenever
+# the firmware is idle
+interrupt_triggers:
+  idle_interrupt:
+    addr: arch_cpu_idle
+    fuzz_mode: fuzzed
+
+# Optional config: Make noisy and typical "anti-fuzzing" functions return
+# immediately to avoid consuming unnecessary computation resources.
+handlers:
+  z_tick_sleep:
+  printk:
+  z_impl_k_busy_wait:
+  z_impl_k_sleep:
+  # randomness generation doesn't work in the fuzzer
+  # skip this as the random value is never used anyways
+  nrf_802154_random_init:
+  # skip and return a fuzz byte
+  z_impl_sys_rand32_get:
+    handler: fuzzware_harness.user_hooks.fuzz.return_fuzz_byte
+    do_return: True
+  # temperature reading is broken, skip it all together
+  temperature_update_init:
+  # disable crashing irq handlers
+  nrfx_gpiote_irq_handler:
+  nrfx_power_irq_handler:
+
+# Optional config: We exit immediately on shutdown functions to reduce
+# the amount of time the fuzzer will spend idling in panic loops.
+exit_at:
+  z_fatal_error:
+  arch_system_halt:
+  z_do_kernel_oops:
+  quit:
+  __assert_no_args:

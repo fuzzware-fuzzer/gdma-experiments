@@ -1,0 +1,42 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 0x5
+
+    # Example 13: SAM3X (scatter-gather)
+    descriptors:
+    - addr: 0x400C4044 # and other DMA channels, if used. Offsets: 0x6c, 0x94, 0xbc, 0xe4, 0x10c
+      known_values:
+        - dmac_trans
+      to:
+        typedef: sam3x_ll_elem
+        fields:
+        - offset: 4
+          type: pointer
+          known_values:
+            - buffer1
+            - buffer2
+            - buffer3
+          to:
+            type: buffer
+        - offset: 0x10
+          type: pointer
+          known_values:
+            - "dmac_trans+0x14"
+            - "dmac_trans+0x28"
+          to:
+            type: sam3x_ll_elem
+
+    known_sizes:
+      buffer1:
+        min: 0x1
+        max: 0x100
+      buffer2:
+        min: 0x1
+        max: 0x100
+      buffer3:
+        min: 0x1
+        max: 0x100

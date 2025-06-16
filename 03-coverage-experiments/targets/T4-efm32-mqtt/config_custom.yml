@@ -1,0 +1,23 @@
+memory_map:
+  dynamically_added_crash_region_0fe081fc:
+    # An area of device info constants
+    # We choose 0xff as a placeholder
+    base_addr: 0x0fe08000
+    file: ./device_info.bin
+    permissions: r--
+    size: 0x200
+
+mmio_models:
+  passthrough:
+    # MMIO Modeling issue: The pointer in this register is re-used by the firmware,
+    # expecting to still hold the previously-written pointer.
+    pointer_passthrough:
+      addr: 0x400c2008
+  bitextract:
+    # MMIO Modeling issue: The bitmask is architecturally defined to hold only
+    # a small number of non-zero bits, but the Fuzzware model allows more.
+    # This leads to out-of-bounds accesses into the struct pointed to by 400c2008.
+    custom_model_DMA_IEN:
+      addr: 0x400c300c
+      size: 0x1
+

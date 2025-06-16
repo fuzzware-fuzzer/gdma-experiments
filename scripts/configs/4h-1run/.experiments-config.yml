@@ -1,0 +1,31 @@
+# All experiments:
+# 114 total firmwares. With a default of 24h runtime and 5 iterations, this is 570 CPU days
+experiments:
+  # 33 firmwares
+  - 01-dice-comparison/01-unit-tests/
+  # 6 firmwares
+  - 01-dice-comparison/02-real-firmware/
+  # 8 mmio, 7 ram
+  - 02-extended-test-suite/
+  # 10 firmwares
+  - 03-coverage-experiments/
+  # 6 firmwares
+  - 04-finding-new-bugs/
+  # 44 targets
+  - 05-false-positive/
+
+# Global config options:
+# these are all mapped to config options in the configs of the individual experiments
+
+# Number of cores employed 
+# mapped to "num_cores" in the individual experiment config
+cores-per-experiment: 50
+
+# defines how long each firmware runs in the emulator
+# mapped to "runtime" 
+fuzzing-time: "4:00:00"
+
+# how many fuzzing projects to generate per firmware
+# mapped to "individual_num_runs"
+runs-per-firmware: 1
+

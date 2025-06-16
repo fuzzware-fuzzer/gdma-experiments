@@ -1,0 +1,9 @@
+handlers:
+  # Disable spurious semihosting functionality
+  _has_ext_stdout_stderr:
+    handler: native.ret_0
+  _patch_semihosting_bkpt:
+    # NOP out the unconditional semihosting breakpoint
+    # at the start of semihosting initialization
+    addr: 0x8000674
+    handler: native.inline_asm_00bf

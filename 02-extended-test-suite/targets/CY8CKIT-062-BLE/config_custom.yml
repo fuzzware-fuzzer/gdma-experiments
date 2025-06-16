@@ -1,0 +1,24 @@
+memory_map:
+  # ram is not available at the default area in psoc6, but at 0x08000000
+  .data:
+    base_addr: 0x8000000
+    permissions: rwx
+    size: 0x4000
+  sflash:
+    base_addr: 0x16000000
+    permissions: rw-
+    size: 0x8000
+  .heap:
+    permissions: rw-
+    base_addr: 0x8004000
+    size: 0x100000
+  text:
+    # The PSoC6 image is combined between Cortex-M4 and Cortex-M0
+    # Use the Cortex-M4 (which supports DMA)
+    ivt_offset: 0x20000
+
+handlers:
+  # Disable the IPC pipe ISR which connects to the Cortex-M0 image
+  Cy_SysIpcPipeIsrCm4:
+
+mock_hardfp: true

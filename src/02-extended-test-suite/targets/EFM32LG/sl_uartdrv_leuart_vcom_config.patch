@@ -1,0 +1,28 @@
+61c61
+< #define SL_UARTDRV_LEUART_VCOM_FLOW_CONTROL_TYPE uartdrvFlowControlNone
+---
+> #define SL_UARTDRV_LEUART_VCOM_FLOW_CONTROL_TYPE uartdrvFlowControlHwUart
+76,78c76,78
+< // #warning "UARTDRV LEUART peripheral not configured"
+< #define SL_UARTDRV_LEUART_VCOM_PERIPHERAL        LEUART0
+< #define SL_UARTDRV_LEUART_VCOM_PERIPHERAL_NO     0
+---
+> #warning "UARTDRV LEUART peripheral not configured"
+> // #define SL_UARTDRV_LEUART_VCOM_PERIPHERAL        LEUART0
+> // #define SL_UARTDRV_LEUART_VCOM_PERIPHERAL_NO     0
+80c80
+< #define SL_UARTDRV_LEUART_VCOM_ROUTE_LOC         0
+---
+> // #define SL_UARTDRV_LEUART_VCOM_ROUTE_LOC         0
+82,83c82,83
+< #define SL_UARTDRV_LEUART_VCOM_TX_PORT           gpioPortA
+< #define SL_UARTDRV_LEUART_VCOM_TX_PIN            0
+---
+> // #define SL_UARTDRV_LEUART_VCOM_TX_PORT           gpioPortA
+> // #define SL_UARTDRV_LEUART_VCOM_TX_PIN            0
+85,86c85,86
+< #define SL_UARTDRV_LEUART_VCOM_RX_PORT           gpioPortA
+< #define SL_UARTDRV_LEUART_VCOM_RX_PIN            1
+---
+> // #define SL_UARTDRV_LEUART_VCOM_RX_PORT           gpioPortA
+> // #define SL_UARTDRV_LEUART_VCOM_RX_PIN            1

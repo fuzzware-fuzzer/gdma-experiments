@@ -1,0 +1,16 @@
+memory_map:
+  # Genconfig auto-detection does not extend far enough
+  .data:
+    # base_addr: 0x10000000
+    # permissions: rw-
+    size: 0x2000
+
+handlers:
+  # Skip (MMIO-based) output function
+  Chip_UART_SendBlocking:
+  # (Optional) The LPC1837 HAL seems to run into an infinite recursion for certain clock values.
+  #            It is not required to skip this, but the resulting crashing inputs may cause unnecessary
+  #            manual analysis effort. Thus, we skip the (otherwise irrelevant) SystemCoreClockUpdate
+  #            and Chip_UART_SetBaudFDR functions.
+  SystemCoreClockUpdate:
+  Chip_UART_SetBaudFDR:

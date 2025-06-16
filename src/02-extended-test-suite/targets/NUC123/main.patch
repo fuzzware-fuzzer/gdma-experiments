@@ -1,0 +1,231 @@
+15c15
+< #include <pw_check.h>
+---
+> 
+26,28c26,28
+< int32_t UART_TEST_LENGTH = 8;
+< uint8_t SrcArray[8];
+< uint8_t DestArray[8];
+---
+> int32_t UART_TEST_LENGTH = 64;
+> uint8_t SrcArray[64];
+> uint8_t DestArray[64];
+34d33
+< EXPORT_DMA_BUFFER_ALIAS (DestArray)
+88c87
+<     /* UART Tx PDMA channel configuration */
+---
+>     /* UART Tx PDMA channel configuration */       
+91c90
+< 
+---
+>     
+93,94c92,93
+<     PDMA_SetTransferAddr(UART_TX_DMA_CH, (uint32_t)SrcArray, PDMA_SAR_INC, (uint32_t)&UART1->THR, PDMA_DAR_FIX);
+< 
+---
+>     PDMA_SetTransferAddr(UART_TX_DMA_CH, (uint32_t)SrcArray, PDMA_SAR_INC, (uint32_t)&UART1->THR, PDMA_DAR_FIX);    
+>     
+96c95
+<     PDMA_SetTransferMode(UART_TX_DMA_CH, PDMA_UART1_TX, FALSE, 0);
+---
+>     PDMA_SetTransferMode(UART_TX_DMA_CH, PDMA_UART1_TX, FALSE, 0);       
+104,106d102
+< 	// if this really sets up peripheral to memory, then we are good here
+< 	// however, this eclipse ide cannot find some of the constants and as such I dont really know the values of constants
+< 
+112,114c108
+<     // educated guess: set source to uart0-> rbr (the data reg), source addr fixed
+<     // destination address is dest array, incrementing
+<     PDMA_SetTransferAddr(UART_RX_DMA_CH, (uint32_t)&UART0->RBR, PDMA_SAR_FIX, (uint32_t)DestArray, PDMA_DAR_INC);
+---
+>     PDMA_SetTransferAddr(UART_RX_DMA_CH, (uint32_t)&UART1->RBR, PDMA_SAR_FIX, (uint32_t)DestArray, PDMA_DAR_INC);
+117c111
+<     PDMA_SetTransferMode(UART_RX_DMA_CH, PDMA_UART0_RX, FALSE, 0);
+---
+>     PDMA_SetTransferMode(UART_RX_DMA_CH, PDMA_UART1_RX, FALSE, 0);       
+122a117,133
+> void PDMA_Callback_0(void)
+> {
+>  	printf("\tTransfer Done %d!\r",++IntCnt);
+> 
+>     /* Use PDMA to do UART loopback test 10 times */
+> 	if(IntCnt<10)
+> 	{   
+>         /* Trigger PDMA */         
+>         PDMA_Trigger(UART_RX_DMA_CH);
+>         PDMA_Trigger(UART_TX_DMA_CH);        
+> 	}
+> 	else
+> 	{
+>         /* Test is over */  
+> 		IsTestOver = TRUE;
+> 	}    
+> }
+124c135
+< void PDMA_Callback(void)
+---
+> void PDMA_Callback_1(void)
+127c138
+<  	// here we can do the password checking and printing
+---
+>  	
+129,130c140,141
+< 
+<     /* Show UART Rx data */
+---
+>     
+>     /* Show UART Rx data */     
+134,135c145,156
+< 	check_password(DestArray);
+< 
+---
+>     
+>     /* Use PDMA to do UART Rx test 10 times */
+> 	if(IntCnt<10)
+> 	{
+>         /* Trigger PDMA */        
+>         PDMA_Trigger(UART_RX_DMA_CH);
+> 	}
+> 	else
+> 	{
+>         /* Test is over */
+> 		IsTestOver = TRUE;
+> 	}    
+147c168,175
+< 		PDMA_Callback();
+---
+>         if(g_u32TwoChannelPdmaTest == 1)
+>         {
+>             PDMA_Callback_0();
+>         }
+>         else if(g_u32TwoChannelPdmaTest == 0)
+>         {
+>             PDMA_Callback_1();
+>         }
+150a179,188
+> /*---------------------------------------------------------------------------------------------------------*/
+> /* ISR to handle UART Channel 0 interrupt event                                                            */
+> /*---------------------------------------------------------------------------------------------------------*/
+> void UART0_IRQHandler(void)
+> {	
+>     /* Get UART0 Rx data and send the data to UART1 Tx */
+>     if( UART_GET_INT_FLAG(UART0, UART_ISR_RDA_INT_Msk) )
+>         UART1->THR = UART0->RBR;
+> }
+> 
+157c195
+< void PDMA_UART()
+---
+> void PDMA_UART(int32_t i32option)
+164c202
+<     SYS_ResetModule(PDMA_RST);
+---
+>     SYS_ResetModule(PDMA_RST);    
+166c204,228
+< 	UART_TEST_LENGTH = 8;	   /* Test Length */
+---
+> 	if(i32option =='1')
+> 	{
+> 		printf("  [Using TWO PDMA channel].\n");
+> 	 	printf("  This sample code will use PDMA to do UART1 loopback test 10 times.\n");
+>         printf("  Please connect UART1_RXD(PB.4) <--> UART1_TXD(PB.5) before testing.\n");
+> 	    printf("  After connecting PB.4 <--> PB.5, press any key to start transfer.\n");  
+> 	    g_u32TwoChannelPdmaTest = 1;
+>         getchar();
+> 	}
+> 	else
+> 	{
+> 		UART_TEST_LENGTH = 2;	   /* Test Length */
+>  		printf("  [Using ONE PDMA channel].\n");
+> 	 	printf("  This sample code will use PDMA to do UART1 Rx test 10 times.\n");
+>         printf("  Please connect UART1_RXD(PB.4) <--> UART1_TXD(PB.5) before testing.\n");
+> 	    printf("  After connecting PB.4 <--> PB.5, press any key to start transfer.\n");
+>         g_u32TwoChannelPdmaTest = 0; 
+> 	    getchar();
+> 		printf("  Please input %d bytes to trigger PDMA one time.(Ex: Press 'a''b')\n", UART_TEST_LENGTH);
+> 	}
+>  
+> 	if(g_u32TwoChannelPdmaTest==1)
+> 	{                   
+>         /* Enable PDMA channel clock */  
+>         PDMA_Open( (1 << UART_TX_DMA_CH) );    
+167a230,233
+>         /* UART Tx PDMA configuration */          
+>         PDMA_UART_TxTest();             
+> 	}
+>         
+181,182c247,251
+< 
+< 	UART_EnableInt(UART0, UART_IER_RDA_IEN_Msk);
+---
+>     if(g_u32TwoChannelPdmaTest==0)
+>     {
+>         UART_EnableInt(UART0, UART_IER_RDA_IEN_Msk);  
+>     }
+>     
+184a254,256
+> 
+> 	if(g_u32TwoChannelPdmaTest==1)
+>         PDMA_Trigger(UART_TX_DMA_CH);   
+186,189c258,264
+<     // disable transmit interrupt
+<     UART0->IER &= ~UART_IER_DMA_TX_EN_Msk;
+<     // enable receive interrupt
+<     UART0->IER |= UART_IER_DMA_RX_EN_Msk;
+---
+>     /* Enable UART Tx and Rx PDMA function */
+>     if(g_u32TwoChannelPdmaTest==1)
+>         UART1->IER |= UART_IER_DMA_TX_EN_Msk;   
+>     else
+>         UART1->IER &= ~UART_IER_DMA_TX_EN_Msk;
+>         
+>     UART1->IER |= UART_IER_DMA_RX_EN_Msk; 
+195c270
+< 	UART0->IER &= ~(UART_IER_DMA_TX_EN_Msk|UART_IER_DMA_RX_EN_Msk);
+---
+> 	UART1->IER &= ~(UART_IER_DMA_TX_EN_Msk|UART_IER_DMA_RX_EN_Msk);   
+274a350,361
+> void UART1_Init()
+> {
+>     /*---------------------------------------------------------------------------------------------------------*/
+>     /* Init UART                                                                                               */
+>     /*---------------------------------------------------------------------------------------------------------*/
+>     /* Reset UART1 */
+>     SYS_ResetModule(UART1_RST);
+> 
+>     /* Configure UART1 and set UART1 Baudrate */
+>     UART_Open(UART1, 115200);
+> }
+> 
+292c379
+<     /* Init UART0 for printf and testing */
+---
+>     /* Init UART0 for printf */
+294a382,384
+>     /* Init UART1 for testing */
+>     UART1_Init();
+> 
+305,307c395,412
+< 	{	// 2 is loopback test
+< 		PDMA_UART();
+<     }while(1);
+---
+> 	{
+> 		printf("\n\n");
+> 		printf("+------------------------------------------------------------------------+\n");
+> 	    printf("|                      UART PDMA Driver Sample Code                      |\n");
+> 	    printf("+------------------------------------------------------------------------+\n");                    
+> 		printf("| [1] Using TWO PDMA channel to test. < TX1(CH1)-->RX1(CH0) >            |\n");
+> 	    printf("| [2] Using ONE PDMA channel to test. < TX1-->RX1(CH0) >                 |\n");
+> 		printf("+------------------------------------------------------------------------+\n");                     
+> 		unItem = getchar();
+> 	
+> 		IsTestOver = FALSE;
+>         if((unItem == '1') || (unItem == '2'))
+>         {
+> 		    PDMA_UART(unItem);
+>             printf("\n\n  UART PDMA sample code is complete.\n");
+>         }
+>         
+>     }while(unItem!=27);

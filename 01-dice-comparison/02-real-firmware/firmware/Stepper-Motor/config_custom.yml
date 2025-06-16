@@ -1,0 +1,16 @@
+handlers:
+  # Disable P2IM-specific AFL forkserver handling
+  aflCall:
+
+mmio_models:
+  bitextract:
+    # Fix MMIO modeling issue
+    # Serial_CheckRxTimeout bounds check from MMIO register
+    # Access to (huart2.hdmarx)->Instance->NDTR;
+    # This is a 4 byte wide register with the upper 16 bits RESERVED and set to 0
+    Serial_CheckRxTimeout_NDTR:
+      addr: 0x4002608c
+      pc: 0x8005da2
+      # Only lower 16 bits can be non-zero
+      size: 0x2
+      mask: 0x0000ffff

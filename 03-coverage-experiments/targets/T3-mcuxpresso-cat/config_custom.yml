@@ -1,0 +1,10 @@
+# Optional config: Make noisy and typical "anti-fuzzing" functions return
+# immediately to avoid consuming unnecessary computation resources.
+hooks:
+  printf:
+
+# Optional config: We exit immediately on shutdown functions to reduce
+# the amount of time the fuzzer will spend idling in panic loops.
+exit_at:
+  fsl_assert_hook:
+  __assert_func:

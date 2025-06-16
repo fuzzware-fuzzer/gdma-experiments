@@ -1,0 +1,8 @@
+# this dir can build, but should not keep build outputs in git
+output/
+*.elf
+# build artifacts
+*.o
+*.d
+.cproject
+.project

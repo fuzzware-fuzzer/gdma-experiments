@@ -1,0 +1,24 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+
+    descriptors:
+      - addr: 0x40005404 # DTC Vector Base Register
+        to:
+          fields: # DTC Vector Table, increase offset by 4 for next entry
+            - offset: 0
+              type: pointer
+              to:
+                fields: # Transfer Information
+                  - offset: 8
+                    type: pointer
+                    to:
+                      type: buffer
+
+    known_sizes:
+      dma_buf:
+        min: 0x8
+        max: 0x8

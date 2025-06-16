@@ -1,0 +1,199 @@
+diff --git a/connectivity/FEATURE_BLE/libraries/TARGET_CORDIO_LL/stack/controller/sources/common/sch/sch_main.c b/connectivity/FEATURE_BLE/libraries/TARGET_CORDIO_LL/stack/controller/sources/common/sch/sch_main.c
+index a29178a957..b8692538b6 100644
+--- a/connectivity/FEATURE_BLE/libraries/TARGET_CORDIO_LL/stack/controller/sources/common/sch/sch_main.c
++++ b/connectivity/FEATURE_BLE/libraries/TARGET_CORDIO_LL/stack/controller/sources/common/sch/sch_main.c
+@@ -86,6 +86,9 @@ static void schBodCurtailHandler(void)
+  *  \brief      BOD load handler.
+  */
+ /*************************************************************************************************/
++// FUZZWARE: fix null pointer deref in schBodLoadHandler by locally allowing assertions
++
++#define WSF_ASSERT(expr) if (!(expr)) {WsfAssert(__FILE__, (uint16_t) __LINE__);}
+ static void schBodLoadHandler(void)
+ {
+   BbOpDesc_t* pNextBod = schCb.pHead;
+@@ -170,6 +173,8 @@ static void schBodLoadHandler(void)
+ #endif
+ }
+
++#define WSF_ASSERT(expr) (void)(expr);
++
+ /*************************************************************************************************/
+ /*!
+  *  \brief      Scheduler load handler.
+diff --git a/connectivity/drivers/ble/FEATURE_BLE/COMPONENT_BlueNRG_2/BlueNrg2HCIDriver.cpp b/connectivity/drivers/ble/FEATURE_BLE/COMPONENT_BlueNRG_2/BlueNrg2HCIDriver.cpp
+index 1800de7e1c..746dda9d86 100644
+--- a/connectivity/drivers/ble/FEATURE_BLE/COMPONENT_BlueNRG_2/BlueNrg2HCIDriver.cpp
++++ b/connectivity/drivers/ble/FEATURE_BLE/COMPONENT_BlueNRG_2/BlueNrg2HCIDriver.cpp
+@@ -493,10 +493,12 @@ private:
+     uint16_t spiWrite(uint8_t type, const uint8_t *data, uint16_t data_length)
+     {
+         static const uint8_t header_master[] = { 0x0a, 0x00, 0x00, 0x00, 0x00 };
+-        uint8_t header_slave[5];
++        static mbed::StaticCacheAlignedBuffer<uint8_t, 5> header_slave;
+         uint16_t data_written = 0;
+         uint16_t write_buffer_size = 0;
+
++        volatile bool transfer_done = false;
++
+         _spi_mutex.lock();
+
+         irq.disable_irq();
+@@ -514,10 +516,18 @@ private:
+             }
+         }
+
++        spi.set_dma_usage(DMA_USAGE_ALWAYS);
++
+         /* Exchange header */
+-        for (uint8_t i = 0; i < sizeof(header_master); ++i) {
+-            header_slave[i] = spi.write(header_master[i]);
++        if (spi.transfer(header_master, sizeof(header_master), header_slave, 5, [&](int result) {transfer_done = true;})) {
++            puts("spiWrite: queue full");
++            goto exit;
+         }
++        while(!transfer_done) {
++            asm volatile("wfimark1: .global wfimark1":); // set marker for interrupt
++            __WFI();
++        };
++        /* Exchange header */
+
+         write_buffer_size = header_slave[2] << 8 | header_slave[1];
+
+@@ -528,10 +535,17 @@ private:
+         spi.write(type);
+
+         data_written = data_length;
+-        for (uint16_t i = 0; i < data_length; ++i) {
+-            spi.write(data[i]);
++        transfer_done = false;
++        if (spi.transfer(data, data_length, nullptr, 0, [&](int result) {transfer_done = true;})) {
++            puts("spiWrite: queue full");
++            goto exit;
+         }
+
++        while(!transfer_done) {
++            asm volatile("wfimark2: .global wfimark2":); // set marker for interrupt
++            __WFI();
++        };
++
+ exit:
+         nCS = 1;
+
+@@ -549,10 +560,12 @@ exit:
+         return (irq == 1);
+     }
+
+-    uint16_t spiRead(uint8_t *data_buffer, const uint16_t buffer_size)
++
++    // FUZZWARE: SPI implementation with DMA
++    uint16_t spiRead(mbed::CacheAlignedBuffer<uint8_t>& data_buffer, const uint16_t buffer_size)
+     {
+         static const uint8_t header_master[] = {0x0b, 0x00, 0x00, 0x00, 0x00};
+-        uint8_t header_slave[5];
++        static mbed::StaticCacheAlignedBuffer<uint8_t, 5> header_slave;
+         uint16_t read_length = 0;
+         uint16_t data_available = 0;
+
+@@ -560,20 +573,36 @@ exit:
+
+         nCS = 0;
+
+-        /* Read the header */
+-        for (size_t i = 0; i < sizeof(header_master); i++) {
+-            header_slave[i] = spi.write(header_master[i]);
++        volatile bool transfer_done = false;
++        spi.set_dma_usage(DMA_USAGE_ALWAYS);
++
++        if (spi.transfer(header_master, sizeof(header_master), header_slave, 5, [&](int result) {transfer_done = true;})) {
++            puts("spiRead: queue full");
++            goto exit;
+         }
+
++        while(!transfer_done) {
++            asm volatile("wfimark3: .global wfimark3":); // set marker for interrupt
++            __WFI();
++        };
++
+         data_available = (header_slave[4] << 8) | header_slave[3];
+         read_length = data_available > buffer_size ? buffer_size : data_available;
+
+-        for (uint16_t i = 0; i < read_length; ++i) {
+-            data_buffer[i] = spi.write(0x00);
++        transfer_done = false;
++
++        if(spi.transfer((uint8_t*)nullptr, 0, data_buffer, read_length, [&](int result) {transfer_done = true;})) {
++            puts("spiRead: queue full");
++            goto exit;
+         }
+
+-        nCS = 1;
++        while(!transfer_done) {
++            asm volatile("wfimark4: .global wfimark4":); // set marker for interrupt
++            __WFI();
++        };
+
++        exit:
++        nCS = 1;
+         irq.enable_irq();
+
+         return read_length;
+@@ -590,14 +613,15 @@ exit:
+
+     void spi_read_cb()
+     {
+-        uint8_t data_buffer[256];
++        static mbed::StaticCacheAlignedBuffer<uint8_t, 256> data_buffer;
+         while (true) {
+-            _spi_read_sem.acquire();
++            // FUZZWARE: we don't need to wait for this interrupt, the board doesn't implement it
++            //_spi_read_sem.acquire();
+
+             _spi_mutex.lock();
+             while (irq == 1) {
+-                uint16_t data_read = spiRead(data_buffer, sizeof(data_buffer));
+-                on_data_received(data_buffer, data_read);
++                uint16_t data_read = spiRead(data_buffer, 256);
++                on_data_received(data_buffer.data(), data_read);
+             }
+             _spi_mutex.unlock();
+         }
+@@ -638,3 +662,10 @@ ble::CordioHCIDriver &ble_cordio_get_hci_driver()
+     );
+     return hci_driver;
+ }
++
++/*
++
++void PORTA_DriverIRQHandler(void) {
++    ble_cordio_get_hci_driver().get_transport_driver().HCI_Isr();
++}
++*/
+diff --git a/connectivity/drivers/ble/FEATURE_BLE/COMPONENT_BlueNRG_2/mbed_lib.json b/connectivity/drivers/ble/FEATURE_BLE/COMPONENT_BlueNRG_2/mbed_lib.json
+index 502efc2aa0..35b5636d5b 100644
+--- a/connectivity/drivers/ble/FEATURE_BLE/COMPONENT_BlueNRG_2/mbed_lib.json
++++ b/connectivity/drivers/ble/FEATURE_BLE/COMPONENT_BlueNRG_2/mbed_lib.json
+@@ -18,6 +18,9 @@
+         },
+         "NUCLEO_F446RE": {
+             "SPI_SCK":   "D13"
++        },
++        "K64F": {
++            "SPI_SCK": "D13"
+         }
+     }
+ }
+diff --git a/connectivity/drivers/ble/FEATURE_BLE/TARGET_NORDIC/TARGET_NORDIC_CORDIO/TARGET_NRF5x/stack/sources/pal_bb_ble.c b/connectivity/drivers/ble/FEATURE_BLE/TARGET_NORDIC/TARGET_NORDIC_CORDIO/TARGET_NRF5x/stack/sources/pal_bb_ble.c
+index 35452d15f6..81480fe9e2 100644
+--- a/connectivity/drivers/ble/FEATURE_BLE/TARGET_NORDIC/TARGET_NORDIC_CORDIO/TARGET_NRF5x/stack/sources/pal_bb_ble.c
++++ b/connectivity/drivers/ble/FEATURE_BLE/TARGET_NORDIC/TARGET_NORDIC_CORDIO/TARGET_NRF5x/stack/sources/pal_bb_ble.c
+@@ -2366,7 +2366,8 @@ void BbBleDrvTimerIRQHandler(void)
+     palBbRadioHardStop();
+
+     /* send notification of timeout */
+-    bbRxCallback(BB_STATUS_RX_TIMEOUT, 0, 0, 0, 0);
++    if (bbRxCallback)
++      bbRxCallback(BB_STATUS_RX_TIMEOUT, 0, 0, 0, 0);
+   }
+ }
+

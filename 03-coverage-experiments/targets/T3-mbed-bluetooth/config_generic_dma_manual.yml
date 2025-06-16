@@ -1,0 +1,27 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 5
+
+    descriptors:
+    - addr: 0x40009010
+      to:
+        type: buffer
+      known_values:
+        - "_ZZN3ble6vendor9bluenrg_215TransportDriver11spi_read_cbEvE11data_buffer+0x8" # spi_read_cb data buffer
+        - "_ZZN3ble6vendor9bluenrg_215TransportDriver7spiReadERN4mbed18CacheAlignedBufferIhEEtE12header_slave+0x8" # spiRead header buffer
+        - "_ZZN3ble6vendor9bluenrg_215TransportDriver8spiWriteEhPKhtE12header_slave+0x8" # spiWrite header buffer
+
+    known_sizes:
+      "_ZZN3ble6vendor9bluenrg_215TransportDriver11spi_read_cbEvE11data_buffer+0x8":
+        min: 0x1
+        max: 0x100
+      "_ZZN3ble6vendor9bluenrg_215TransportDriver7spiReadERN4mbed18CacheAlignedBufferIhEEtE12header_slave+0x8":
+        min: 0x1
+        max: 0x5
+      "_ZZN3ble6vendor9bluenrg_215TransportDriver8spiWriteEhPKhtE12header_slave+0x8":
+        min: 0x1
+        max: 0x5

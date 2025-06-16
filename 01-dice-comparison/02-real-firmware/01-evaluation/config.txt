@@ -1,0 +1,9 @@
+1m
+50
+1
+GPSReceiver
+GuitarPedal
+MIDISynthetizer
+Modbus
+SolderingStation
+StepperMotor

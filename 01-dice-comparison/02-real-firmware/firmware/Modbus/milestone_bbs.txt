@@ -1,0 +1,2 @@
+# modbusSlaveCheckID success case in modbusSlaveHandler
+0x0800231a

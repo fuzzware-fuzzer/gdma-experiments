@@ -1,0 +1,35 @@
+include:
+- config.yml
+
+peripherals:
+  my_dma_periph:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+    packet_limit: 1
+    descriptors:
+    # GPDMA->DESTADDR0
+    - addr: 0x40002104
+      to:
+        type: buffer
+      known_values:
+        # 0x1fff0078
+        - dma_buf
+      alt_addrs: 
+      - 0x40002124
+      - 0x40002144
+      - 0x40002164
+      - 0x40002184
+      - 0x400021a4
+      - 0x400021c4
+      - 0x400021e4
+
+    # Related registers
+    # other valid DMA channel DESTADDR register offsets to 0x40002000
+    # Offsets: 0x104 (DESTADDR0), 0x124 (DESTADDR1), ..., 0x1e4 (DESTADDR7)
+
+    known_sizes:
+      dma_buf:
+        min: 0x8
+        max: 0x8
+
+    # GPDMA->DESTADDR1
+    # this sample has nondeterministic channel selection

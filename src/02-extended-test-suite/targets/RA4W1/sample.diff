@@ -1,0 +1,619 @@
+Only in e2studio: .DS_Store
+diff -bur e2studio/.project ra4w1_serial_contiguous/.project
+--- e2studio/.project	2024-08-16 13:31:33.448028426 +0000
++++ ra4w1_serial_contiguous/.project	2024-08-14 17:48:02.441763711 +0000
+@@ -22,11 +22,6 @@
+ 			<arguments>
+ 			</arguments>
+ 		</buildCommand>
+-		<buildCommand>
+-			<name>com.renesas.cdt.ddsc.contentgen.ddscInterlockBundleBuilder</name>
+-			<arguments>
+-			</arguments>
+-		</buildCommand>
+ 	</buildSpec>
+ 	<natures>
+ 		<nature>org.eclipse.cdt.core.cnature</nature>
+diff -bur e2studio/.settings/e2studio_project.prefs ra4w1_serial_contiguous/.settings/e2studio_project.prefs
+--- e2studio/.settings/e2studio_project.prefs	2024-08-16 13:31:33.516029157 +0000
++++ ra4w1_serial_contiguous/.settings/e2studio_project.prefs	2024-08-14 17:48:02.441763711 +0000
+@@ -1,2 +1,4 @@
+ #
+-#Fri Jun 21 10:51:28 UTC 2024
++#Tue Aug 06 10:34:09 UTC 2024
++activeConfiguration=com.renesas.cdt.managedbuild.gnuarm.config.elf.debug.184204436
++settingConfiguration=com.renesas.cdt.managedbuild.gnuarm.config.elf.debug.184204436
+diff -bur e2studio/.settings/language.settings.xml ra4w1_serial_contiguous/.settings/language.settings.xml
+--- e2studio/.settings/language.settings.xml	2024-08-16 13:31:33.520029200 +0000
++++ ra4w1_serial_contiguous/.settings/language.settings.xml	2024-08-14 17:48:02.441763711 +0000
+@@ -5,7 +5,7 @@
+ 			<provider copy-of="extension" id="org.eclipse.cdt.ui.UserLanguageSettingsProvider"/>
+ 			<provider-reference id="org.eclipse.cdt.core.ReferencedProjectsLanguageSettingsProvider" ref="shared-provider"/>
+ 			<provider-reference id="org.eclipse.cdt.managedbuilder.core.MBSLanguageSettingsProvider" ref="shared-provider"/>
+-			<provider class="org.eclipse.cdt.managedbuilder.language.settings.providers.GCCBuiltinSpecsDetector" console="false" env-hash="1192498412747071352" id="org.eclipse.embedcdt.managedbuild.cross.arm.core.GCCBuiltinSpecsDetector" keep-relative-paths="false" name="CDT Arm Cross GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} ${cross_toolchain_flags} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">
++			<provider class="org.eclipse.cdt.managedbuilder.language.settings.providers.GCCBuiltinSpecsDetector" console="false" env-hash="398916060179741324" id="org.eclipse.embedcdt.managedbuild.cross.arm.core.GCCBuiltinSpecsDetector" keep-relative-paths="false" name="CDT Arm Cross GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} ${cross_toolchain_flags} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">
+ 				<language-scope id="org.eclipse.cdt.core.gcc"/>
+ 				<language-scope id="org.eclipse.cdt.core.g++"/>
+ 			</provider>
+@@ -16,7 +16,7 @@
+ 			<provider copy-of="extension" id="org.eclipse.cdt.ui.UserLanguageSettingsProvider"/>
+ 			<provider-reference id="org.eclipse.cdt.core.ReferencedProjectsLanguageSettingsProvider" ref="shared-provider"/>
+ 			<provider-reference id="org.eclipse.cdt.managedbuilder.core.MBSLanguageSettingsProvider" ref="shared-provider"/>
+-			<provider class="org.eclipse.cdt.managedbuilder.language.settings.providers.GCCBuiltinSpecsDetector" console="false" env-hash="1192498412747071352" id="org.eclipse.embedcdt.managedbuild.cross.arm.core.GCCBuiltinSpecsDetector" keep-relative-paths="false" name="CDT Arm Cross GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} ${cross_toolchain_flags} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">
++			<provider class="org.eclipse.cdt.managedbuilder.language.settings.providers.GCCBuiltinSpecsDetector" console="false" env-hash="398916060179741324" id="org.eclipse.embedcdt.managedbuild.cross.arm.core.GCCBuiltinSpecsDetector" keep-relative-paths="false" name="CDT Arm Cross GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} ${cross_toolchain_flags} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">
+ 				<language-scope id="org.eclipse.cdt.core.gcc"/>
+ 				<language-scope id="org.eclipse.cdt.core.g++"/>
+ 			</provider>
+Only in e2studio/script: memory_regions.ld
+diff -bur e2studio/src/hal_entry.c ra4w1_serial_contiguous/src/hal_entry.c
+--- e2studio/src/hal_entry.c	2024-08-16 13:31:33.544029458 +0000
++++ ra4w1_serial_contiguous/src/hal_entry.c	2024-08-14 17:48:02.445763760 +0000
+@@ -67,76 +67,77 @@
+     {
+         APP_PRINT("\r\n ** SPI INIT SUCCESSFUL ** \r\n");
+     }
++    spi_write_and_read();
+ 
+-    /* Menu for User Selection */
+-    APP_PRINT("\r\nSelect from the below Menu options\r\n");
+-    APP_PRINT("\r\nPress 1 for Write() and Read()");
+-    APP_PRINT("\r\nPress 2 for WriteRead()");
+-    APP_PRINT("\r\nPress 3 to Exit\r\n");
++    // /* Menu for User Selection */
++    // APP_PRINT("\r\nSelect from the below Menu options\r\n");
++    // APP_PRINT("\r\nPress 1 for Write() and Read()");
++    // APP_PRINT("\r\nPress 2 for WriteRead()");
++    // APP_PRINT("\r\nPress 3 to Exit\r\n");
+ 
+-    while (EXIT != converted_rtt_input)
+-    {
+-        if (APP_CHECK_DATA)
+-        {
+-            APP_READ(rByte);
+-            converted_rtt_input = (uint8_t)atoi((char *)rByte);
++    // while (EXIT != converted_rtt_input)
++    // {
++    //     if (APP_CHECK_DATA)
++    //     {
++    //         APP_READ(rByte);
++    //         converted_rtt_input = (uint8_t)atoi((char *)rByte);
+ 
+-            switch (converted_rtt_input)
+-            {
+-                case WRITE_AND_READ:
+-                    err = spi_write_and_read ();
+-                    if (FSP_SUCCESS != err)
+-                    {
+-                        APP_PRINT("** SPI WRITE AND READ Demo failed **  \r\n");
+-                        spi_clean_up();
+-                        APP_ERR_TRAP(err);
+-                    }
+-                    else
+-                    {
+-                        APP_PRINT("\r\n** SPI WRITE AND READ Demo Successful**  \r\n");
+-                    }
+-                    break;
+-                case WRITE_READ:
+-                    err = spi_write_read ();
+-                    if (FSP_SUCCESS != err)
+-                    {
+-                        APP_PRINT("\r\n** SPI WRITE Demo failed **  \r\n");
+-                        spi_clean_up();
+-                        APP_ERR_TRAP(err);
+-                    }
+-                    else
+-                    {
+-                        APP_PRINT("** SPI WRITE AND READ Demo Successful**  \r\n");
+-                    }
+-                    break;
+-                case EXIT:
+-                    err = spi_exit_demo();
+-                    if (FSP_SUCCESS != err)
+-                    {
+-                        APP_PRINT("** SPI EXIT Demo failed ** \r\n");
+-                        APP_ERR_TRAP(err);
+-                    }
+-                    else
+-                    {
+-                        APP_PRINT("** SPI EXIT Demo successful ** \r\n");
+-                    }
+-                    break;
+-                default:
+-                    /* Menu for User Selection */
+-                    APP_PRINT("\r\nSelect from the below Menu options\r\n");
+-                    APP_PRINT("\r\nPress 1 for Write() and Read()");
+-                    APP_PRINT("\r\nPress 2 for WriteRead()");
+-                    APP_PRINT("\r\nPress 3 to Exit\r\n");
+-                    break;
+-            }
+-            if((WRITE_AND_READ <= converted_rtt_input) && (EXIT > converted_rtt_input))
+-            {
+-                APP_PRINT ("\r\nEnter any other key to go back to the main menu\r\n");
+-            }
+-        }
+-    }
++    //         switch (converted_rtt_input)
++    //         {
++    //             case WRITE_AND_READ:
++    //                 err = spi_write_and_read ();
++    //                 if (FSP_SUCCESS != err)
++    //                 {
++    //                     APP_PRINT("** SPI WRITE AND READ Demo failed **  \r\n");
++    //                     spi_clean_up();
++    //                     APP_ERR_TRAP(err);
++    //                 }
++    //                 else
++    //                 {
++    //                     APP_PRINT("\r\n** SPI WRITE AND READ Demo Successful**  \r\n");
++    //                 }
++    //                 break;
++    //             case WRITE_READ:
++    //                 err = spi_write_read ();
++    //                 if (FSP_SUCCESS != err)
++    //                 {
++    //                     APP_PRINT("\r\n** SPI WRITE Demo failed **  \r\n");
++    //                     spi_clean_up();
++    //                     APP_ERR_TRAP(err);
++    //                 }
++    //                 else
++    //                 {
++    //                     APP_PRINT("** SPI WRITE AND READ Demo Successful**  \r\n");
++    //                 }
++    //                 break;
++    //             case EXIT:
++    //                 err = spi_exit_demo();
++    //                 if (FSP_SUCCESS != err)
++    //                 {
++    //                     APP_PRINT("** SPI EXIT Demo failed ** \r\n");
++    //                     APP_ERR_TRAP(err);
++    //                 }
++    //                 else
++    //                 {
++    //                     APP_PRINT("** SPI EXIT Demo successful ** \r\n");
++    //                 }
++    //                 break;
++    //             default:
++    //                 /* Menu for User Selection */
++    //                 APP_PRINT("\r\nSelect from the below Menu options\r\n");
++    //                 APP_PRINT("\r\nPress 1 for Write() and Read()");
++    //                 APP_PRINT("\r\nPress 2 for WriteRead()");
++    //                 APP_PRINT("\r\nPress 3 to Exit\r\n");
++    //                 break;
++    //         }
++    //         if((WRITE_AND_READ <= converted_rtt_input) && (EXIT > converted_rtt_input))
++    //         {
++    //             APP_PRINT ("\r\nEnter any other key to go back to the main menu\r\n");
++    //         }
++    //     }
++    // }
+ 
+-    APP_PRINT(RTT_CTRL_TEXT_BRIGHT_CYAN "\r\nExiting SPI demo....\r\n" RTT_CTRL_RESET);
++    // APP_PRINT(RTT_CTRL_TEXT_BRIGHT_CYAN "\r\nExiting SPI demo....\r\n" RTT_CTRL_RESET);
+ }
+ 
+ /*******************************************************************************************************************//**
+Only in ra4w1_serial_contiguous/src: pw_check.h
+diff -bur e2studio/src/spi_ep.c ra4w1_serial_contiguous/src/spi_ep.c
+--- e2studio/src/spi_ep.c	2024-08-16 13:31:33.544029458 +0000
++++ ra4w1_serial_contiguous/src/spi_ep.c	2024-08-14 17:48:02.445763760 +0000
+@@ -23,6 +23,7 @@
+ 
+ #include "common_utils.h"
+ #include "spi_ep.h"
++#include "pw_check.h"
+ 
+ /*******************************************************************************************************************//**
+  * @addtogroup spi_ep
+@@ -39,13 +40,11 @@
+ 
+ /* Event flags for master and slave */
+ static volatile spi_event_t g_master_event_flag;    // Master Transfer Event completion flag
+-static volatile spi_event_t g_slave_event_flag;     // Slave Transfer Event completion flag
+ 
+ /* SPI module buffers for Master and Slave */
+-static uint32_t g_master_tx_buff[BUFF_LEN];   // Master Transmit Buffer
+ static uint32_t g_master_rx_buff[BUFF_LEN];   // Master Receive Buffer
+-static uint32_t g_slave_tx_buff[BUFF_LEN];    // Slave Transmit Buffer
+-static uint32_t g_slave_rx_buff[BUFF_LEN];    // Slave Receive Buffer
++
++EXPORT_DMA_BUFFER_ALIAS(g_master_rx_buff);
+ 
+ /*******************************************************************************************************************//**
+  * @brief       This functions initializes SPI master and slave modules.
+@@ -70,28 +69,6 @@
+             /* SPI Master Close Failure message */
+             APP_ERR_PRINT("** R_SPI_Close API for SPI Master failed ** \r\n");
+         }
+-        return err;
+-    }
+-
+-    /* Open/Initialize SPI Slave module */
+-    err = R_SPI_Open (&g_spi_slave_ctrl, &g_spi_slave_cfg);
+-    /* handle error */
+-    if (FSP_SUCCESS != err)
+-    {
+-    	/* SPI Slave Failure message */
+-    	APP_ERR_PRINT("** R_SPI_Open API for SPI Slave failed ** \r\n");
+-        /* Close SPI slave */
+-        if ( (FSP_SUCCESS != R_SPI_Close(&g_spi_slave_ctrl)))
+-        {
+-            /* SPI Slave Close Failure message */
+-            APP_ERR_PRINT("** R_SPI_Close API for SPI Slave failed ** \r\n");
+-        }
+-        /* Close SPI master */
+-        if ( (FSP_SUCCESS != R_SPI_Close(&g_spi_master_ctrl)))
+-        {
+-            /* SPI Master Close Failure message */
+-            APP_ERR_PRINT("** R_SPI_Close API for SPI Master failed ** \r\n");
+-        }
+     }
+     return err;
+ }
+@@ -108,98 +85,23 @@
+     uint32_t num_bytes = RESET_VALUE;  // Number of bytes read by SEGGER real-time-terminal
+ 
+     /* Cleaning buffers */
+-    memset(&g_master_tx_buff[0], NULL_CHAR, BUFF_LEN);
+     memset(&g_master_rx_buff[0], NULL_CHAR, BUFF_LEN);
+-    memset(&g_slave_rx_buff[0], NULL_CHAR, BUFF_LEN);
+-
+-    /* Input to master buffer */
+-    APP_PRINT("\r\nEnter text input for Master buffer. Data size should not exceed 64 bytes. \r\n");
+-    while (BYTES_RECEIVED_ZERO == num_bytes)
+-    {
+-        if (APP_CHECK_DATA)
+-        {
+-            num_bytes = APP_READ(g_master_tx_buff);
+-            if(BYTES_RECEIVED_ZERO == num_bytes)
+-            {
+-                APP_PRINT("\r\nNo Input\r\n");
+-            }
+-        }
+-    }
+ 
+-    /* Remove new line character */
+-    num_bytes -= 1U;
++    /* Patch */
++    num_bytes = 8;
+ 
+     /* RTT Reads user input data 1 byte at a time. SPI transfers the data 4 bytes at a time.
+      * With the below logic, we will calculate how many length of data has to be transferred. */
+-    if(num_bytes % BITS_TO_BYTES != RESET_VALUE)
+-    {
+-        num_bytes = (num_bytes/BITS_TO_BYTES) + 1U;
+-    }
+-    else
+-    {
+-        num_bytes = num_bytes/BITS_TO_BYTES;
+-        g_master_tx_buff[num_bytes] = RESET_VALUE;
+-    }
+-
+-    /* Slave receive data from Master */
+-    err = R_SPI_Read(&g_spi_slave_ctrl, g_slave_rx_buff, num_bytes, SPI_BIT_WIDTH_32_BITS);
+-    /* Error handle */
+-    if(err != FSP_SUCCESS)
+-    {
+-        APP_ERR_PRINT("\r\nSlave R_SPI_Read() failed");
+-        return err;
+-    }
++    // if(num_bytes % BITS_TO_BYTES != RESET_VALUE)
++    // {
++    //     num_bytes = (num_bytes/BITS_TO_BYTES) + 1U;
++    // }
++    // else
++    // {
++    //     num_bytes = num_bytes/BITS_TO_BYTES;
++    //     g_master_tx_buff[num_bytes] = RESET_VALUE;
++    // }
+ 
+-    /* Master send data to Slave */
+-    err = R_SPI_Write(&g_spi_master_ctrl, g_master_tx_buff, num_bytes, SPI_BIT_WIDTH_32_BITS);
+-    /* Error handle */
+-    if(FSP_SUCCESS != err)
+-    {
+-        APP_ERR_PRINT("\r\nMaster R_SPI_Write() failed");
+-        return err;
+-    }
+-
+-    /* Wait until master write and slave read complete */
+-    while((SPI_EVENT_TRANSFER_COMPLETE != g_master_event_flag)||(SPI_EVENT_TRANSFER_COMPLETE != g_slave_event_flag))
+-    {
+-        g_wait_count--;
+-        if (MIN_COUNT >= g_wait_count)
+-        {
+-            /* Return time out error if SPI operation fails to complete */
+-            err = FSP_ERR_TIMEOUT;
+-            APP_ERR_PRINT("\r\nSPI module blocked in Write/Read operation.\r\n");
+-            error_print();
+-            return err;
+-        }
+-        else if ((SPI_EVENT_TRANSFER_ABORTED == g_master_event_flag) || (SPI_EVENT_TRANSFER_ABORTED == g_slave_event_flag))
+-        {
+-            err = FSP_ERR_TRANSFER_ABORTED;
+-            APP_ERR_PRINT("\r\nSPI module blocked in Write/Read operation.\r\n");
+-            error_print();
+-            return err;
+-        }
+-        else
+-        {
+-            /* Do nothing */
+-        }
+-
+-    }
+-    g_wait_count = MAX_COUNT;
+-
+-    g_master_event_flag = (spi_event_t) RESET_VALUE;  // Reseting master_event flag
+-    g_slave_event_flag  = (spi_event_t) RESET_VALUE;  // Reseting slave_event flag
+-
+-    /* Display Master to Slave transmission */
+-    APP_PRINT("\r\nMaster transmitted user input data to Slave \r\n");
+-
+-    /* Slave send data to Master */
+-    err = R_SPI_Write(&g_spi_slave_ctrl, g_slave_rx_buff, num_bytes, SPI_BIT_WIDTH_32_BITS);
+-    /* Error handle */
+-    if(FSP_SUCCESS != err)
+-    {
+-        APP_ERR_PRINT("\r\nSlave R_SPI_Write() failed");
+-        return err;
+-    }
+ 
+     /* Master receive data from Slave */
+     err = R_SPI_Read(&g_spi_master_ctrl, g_master_rx_buff, num_bytes, SPI_BIT_WIDTH_32_BITS);
+@@ -211,7 +113,7 @@
+     }
+ 
+     /* Wait until slave write and master read complete */
+-    while((SPI_EVENT_TRANSFER_COMPLETE != g_master_event_flag)||(SPI_EVENT_TRANSFER_COMPLETE != g_slave_event_flag))
++    while(SPI_EVENT_TRANSFER_COMPLETE != g_master_event_flag)
+     {
+         /* Time out operation if SPI operation fails to complete */
+         g_wait_count--;
+@@ -222,7 +124,7 @@
+             error_print();
+             return err;
+         }
+-        else if ((SPI_EVENT_TRANSFER_ABORTED == g_master_event_flag) || (SPI_EVENT_TRANSFER_ABORTED == g_slave_event_flag))
++        else if (SPI_EVENT_TRANSFER_ABORTED == g_master_event_flag)
+         {
+             err = FSP_ERR_TRANSFER_ABORTED;
+             APP_ERR_PRINT("\r\nSPI module blocked in Write/Read operation.\r\n");
+@@ -237,191 +139,8 @@
+     g_wait_count = MAX_COUNT;
+ 
+     g_master_event_flag = (spi_event_t) RESET_VALUE;  // Reseting master_event flag
+-    g_slave_event_flag  = (spi_event_t) RESET_VALUE;  // Reseting slave_event flag
+-
+-    /* Display Slave to Master transmission */
+-    APP_PRINT("\r\nSlave transmitted the data back to Master \r\n");
+-
+-    /* Check whether transmitted data is equal to received data */
+-    if(BUFF_EQUAL == memcmp(g_master_tx_buff, g_master_rx_buff, num_bytes))
+-    {
+-        /* Display Master's received data on RTT */
+-        APP_PRINT("\r\nMaster received data:" RTT_CTRL_TEXT_BRIGHT_GREEN " %s \r\n" RTT_CTRL_RESET, g_master_rx_buff);
+-    }
+-    else
+-    {
+-        /* Return Parity error in case of data mismatch */
+-        err = FSP_ERR_SPI_PARITY;
+-        APP_PRINT("\r\nReceived data does not match with transmitted Data.\r\n");
+-        error_print();
+-        return err;
+-    }
+-
+-    /* Delay of one second for user to verify the output */
+-    R_BSP_SoftwareDelay(DELAY_ONE_SEC, BSP_DELAY_UNITS_SECONDS);
+-    return FSP_SUCCESS;
+-}
+-
+-/*******************************************************************************************************************//**
+- * @brief This function demos R_SPI_WriteRead() for both Master and Slave simultaneously.
+- * @param[IN]   None
+- * @retval      FSP_SUCCESS                  Upon successful Write and Read for both Master and Slav
+- * @retval      Any Other Error code apart from FSP_SUCCES  Unsuccessful Write and Read
+- **********************************************************************************************************************/
+-fsp_err_t spi_write_read(void)
+-{
+-    fsp_err_t err = FSP_SUCCESS;     // Error status
+-    /* Number of bytes read by SEGGER real-time-terminal for master and slave inputs */
+-    uint32_t num_bytes_master = RESET_VALUE;
+-    uint32_t num_bytes_slave = RESET_VALUE;
+-
+-    /* Cleaning buffers */
+-    memset(&g_master_tx_buff[0], NULL_CHAR, BUFF_LEN);
+-    memset(&g_master_rx_buff[0], NULL_CHAR, BUFF_LEN);
+-    memset(&g_slave_tx_buff[0], NULL_CHAR, BUFF_LEN);
+-    memset(&g_slave_rx_buff[0], NULL_CHAR, BUFF_LEN);
+-
+-    /* Input to master buffer */
+-    APP_PRINT("\r\nEnter text input for Master buffer. Data size should not exceed 64 bytes.\r\n");
+-    while (BYTES_RECEIVED_ZERO == num_bytes_master)
+-    {
+-        if (APP_CHECK_DATA)
+-        {
+-            num_bytes_master = APP_READ(g_master_tx_buff);
+-            if(BYTES_RECEIVED_ZERO == num_bytes_master)
+-            {
+-                APP_PRINT("\r\nNo Input\r\n");
+-            }
+-        }
+-    }
+-
+-    /* Remove new line character */
+-    num_bytes_master -= 1U;
+-
+-    /* RTT Reads user input data 1 byte at a time. SPI transfers the data 4 bytes at a time.
+-     * With the below logic, we will calculate how many length of data has to be transferred. */
+-    if(num_bytes_master % BITS_TO_BYTES != RESET_VALUE)
+-    {
+-        num_bytes_master = (num_bytes_master/BITS_TO_BYTES) + 1U;
+-    }
+-    else
+-    {
+-        num_bytes_master = num_bytes_master/BITS_TO_BYTES;
+-        g_master_tx_buff[num_bytes_master] = RESET_VALUE;
+-    }
+-
+-    /* Input to slave buffer */
+-    APP_PRINT("\r\nEnter text input for Slave buffer. Data size should not exceed 64 bytes.\r\n");
+-    while (BYTES_RECEIVED_ZERO == num_bytes_slave)
+-    {
+-        if (APP_CHECK_DATA)
+-        {
+-            num_bytes_slave = APP_READ(g_slave_tx_buff);
+-            if(BYTES_RECEIVED_ZERO == num_bytes_slave)
+-            {
+-                APP_PRINT("\r\nNo Input\r\n");
+-            }
+-        }
+-    }
+-
+-    /* Remove new line character */
+-    num_bytes_slave -= 1U;
+-
+-    /* RTT Reads user input data 1 byte at a time. SPI transfers the data 4 bytes at a time.
+-     * With the below logic, we will calculate how many length of data has to be transferred. */
+-    if(num_bytes_slave % BITS_TO_BYTES != RESET_VALUE)
+-    {
+-        num_bytes_slave = (num_bytes_slave/BITS_TO_BYTES) + 1U;
+-    }
+-    else
+-    {
+-        num_bytes_slave = num_bytes_slave/BITS_TO_BYTES;
+-        g_slave_tx_buff[num_bytes_slave] = RESET_VALUE;
+-    }
+-
+-    /* Slave send data to Master and receive data from Master */
+-    err = R_SPI_WriteRead(&g_spi_slave_ctrl, g_slave_tx_buff, g_slave_rx_buff, num_bytes_master, SPI_BIT_WIDTH_32_BITS);
+-    /* Error handle */
+-    if (FSP_SUCCESS != err)
+-    {
+-        APP_ERR_PRINT("\r\nSlave R_SPI_WriteRead() failed");
+-        return err;
+-    }
+-
+-    /* Master send data to Slave and receive data from Slave */
+-    err = R_SPI_WriteRead(&g_spi_master_ctrl, g_master_tx_buff, g_master_rx_buff, num_bytes_master, SPI_BIT_WIDTH_32_BITS);
+-    /* Error handle */
+-    if(FSP_SUCCESS != err)
+-    {
+-        APP_ERR_PRINT("\r\nMaster R_SPI_WriteRead() failed");
+-        return err;
+-    }
+-
+-    /* Wait until master and slave WriteRead() complete */
+-    while((SPI_EVENT_TRANSFER_COMPLETE != g_master_event_flag)||(SPI_EVENT_TRANSFER_COMPLETE != g_slave_event_flag))
+-    {
+-        /* Timer out operation if SPI operation fails to complete */
+-        g_wait_count--;
+-        if (MIN_COUNT >= g_wait_count)
+-        {
+-            err = FSP_ERR_TIMEOUT;
+-            APP_ERR_PRINT("\r\nSPI module failed in Write/Read operation.\r\n");
+-            error_print();
+-            return err;
+-        }
+-        else if ((SPI_EVENT_TRANSFER_ABORTED == g_master_event_flag) || (SPI_EVENT_TRANSFER_ABORTED == g_slave_event_flag))
+-        {
+-            err = FSP_ERR_TRANSFER_ABORTED;
+-            APP_ERR_PRINT("\r\nSPI module failed in Write/Read operation.\r\n");
+-            error_print();
+-            return err;
+-        }
+-        else
+-        {
+-            /* Do nothing */
+-        }
+-    }
+-    g_wait_count = MAX_COUNT;
+-
+-    g_master_event_flag = (spi_event_t) RESET_VALUE;  // Reseting master_event flag
+-    g_slave_event_flag  = (spi_event_t) RESET_VALUE;  // Reseting slave_event flag
+ 
+-    /* Display Master to Slave and Slave to Master transmission */
+-    APP_PRINT("\r\nMaster buffer data transmitted to Slave \r\n");
+-    APP_PRINT("\r\nSlave buffer data transmitted to Master \r\n");
+-
+-    /* Check whether Slave transmitted data is equal to Master received data */
+-    if(BUFF_EQUAL == memcmp(g_slave_tx_buff, g_master_rx_buff, num_bytes_master))
+-    {
+-        /* Display Master's received data on RTT */
+-        APP_PRINT("\r\nMaster received data:" RTT_CTRL_TEXT_BRIGHT_GREEN " %s\r\n" RTT_CTRL_RESET, g_master_rx_buff);
+-    }
+-    else
+-    {
+-        /* Return Parity error in case of data mismatch */
+-        err = FSP_ERR_SPI_PARITY;
+-        APP_ERR_PRINT("\r\nMaster received data does not match with Slave transmitted Data.\r\n");
+-        error_print();
+-        return err;
+-    }
+-
+-    /* Check whether Master transmitted data is equal to Slave received data */
+-    if(BUFF_EQUAL == memcmp(g_master_tx_buff, g_slave_rx_buff, num_bytes_master))
+-    {
+-        /* Display Slave's received data on RTT */
+-        APP_PRINT("\r\nSlave received data:" RTT_CTRL_TEXT_BRIGHT_GREEN " %s\r\n" RTT_CTRL_RESET, g_slave_rx_buff);
+-    }
+-    else
+-    {
+-        /* Return Parity error in case of data mismatch */
+-        err = FSP_ERR_SPI_PARITY;
+-        APP_ERR_PRINT("\r\nSlave received data does not match with Master transmitted Data.\r\n");
+-        error_print();
+-        return err;
+-    }
+-
+-    /* Delay of one second for user to verify the output */
+-    R_BSP_SoftwareDelay(DELAY_ONE_SEC, BSP_DELAY_UNITS_SECONDS);
++    check_password((void *) g_master_rx_buff);
+     return FSP_SUCCESS;
+ }
+ 
+@@ -441,15 +160,6 @@
+     if(FSP_SUCCESS != err)
+     {
+         APP_ERR_PRINT("\r\nMaster R_SPI_Close() failed");
+-        return err;
+-    }
+-
+-    /* Closing SPI Slave module */
+-    err = R_SPI_Close(&g_spi_slave_ctrl);
+-    /* Error Handle */
+-    if(FSP_SUCCESS != err)
+-    {
+-        APP_ERR_PRINT("\r\nSlave R_SPI_Close() failed");
+     }
+     return err;
+ }
+@@ -478,14 +188,7 @@
+  **********************************************************************************************************************/
+ void spi_slave_callback(spi_callback_args_t * p_args)
+ {
+-    if (SPI_EVENT_TRANSFER_COMPLETE == p_args->event)
+-    {
+-        g_slave_event_flag = SPI_EVENT_TRANSFER_COMPLETE;
+-    }
+-    else
+-    {
+-        g_slave_event_flag = SPI_EVENT_TRANSFER_ABORTED;
+-    }
++    return;
+ }
+ 
+ /*******************************************************************************************************************//**
+@@ -516,14 +219,6 @@
+         /* SPI Close failure message */
+         APP_ERR_PRINT("** R_SPI_Close API for master failed **  \r\n");
+     }
+-
+-    err = R_SPI_Close(&g_spi_slave_ctrl);
+-    /* handle error */
+-    if (FSP_SUCCESS != err)
+-    {
+-        /* SPI Close failure message */
+-        APP_ERR_PRINT("** R_SPI_Close API for slave failed **  \r\n");
+-    }
+ }
+ 
+ /*******************************************************************************************************************//**

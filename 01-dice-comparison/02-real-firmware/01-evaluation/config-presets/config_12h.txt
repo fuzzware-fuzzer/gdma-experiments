@@ -1,0 +1,9 @@
+12h
+CORES
+10
+GPSReceiver
+GuitarPedal
+MIDISynthetizer
+Modbus
+SolderingStation
+StepperMotor

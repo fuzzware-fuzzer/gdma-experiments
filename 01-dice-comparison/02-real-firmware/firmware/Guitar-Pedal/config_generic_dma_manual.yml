@@ -1,0 +1,18 @@
+include:
+- config.yml
+
+peripherals:
+  dma_buf_on_bb:
+    class: fuzzware_harness.peripherals.generic_dma.GenericDMAC
+
+    descriptors:
+    - addr: 0x40020014 # DMA1->CMAR1
+      to:
+        type: buffer
+      known_values:
+        - 0x20002af4 #2x uint32_t, samps
+
+    known_sizes:
+      0x20002af4:
+        min: 0x8
+        max: 0x8
