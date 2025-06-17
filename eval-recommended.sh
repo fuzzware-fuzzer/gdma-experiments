@@ -4,7 +4,7 @@ venv_path=`dirname $file_path`/scripts/venv/
 scripts_path=`dirname $file_path`/scripts/
 req_path=`dirname $file_path`/scripts/requirements.txt
 cli_path=`dirname $file_path`/scripts/cli.py
-set -x
+set -xe
 
 if [ -d "$scripts_path/results/" ]; then
   rm -rf $scripts_path/results

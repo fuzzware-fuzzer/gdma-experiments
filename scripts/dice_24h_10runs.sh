@@ -1,6 +1,6 @@
 #! /bin/bash
 path=$(dirname "$0")
-set -x
+set -xe
 echo $path
 
 if [ -d "results/" ]; then

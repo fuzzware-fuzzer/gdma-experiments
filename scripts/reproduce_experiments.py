@@ -98,20 +98,20 @@ def check_limits(disable_governor_check):
     inst_fp.close()
     if inst_num < 512:
         print("Please increase the inotify max user instances to at least 512\necho 512 > /proc/sys/fs/inotify/max_user_instances")
-        exit()
+        sys.exit(-1)
     watch_fp = open("/proc/sys/fs/inotify/max_user_watches","r")
     watch_num = int(watch_fp.read().strip())
     watch_fp.close()
     if watch_num < 524288:
         print("Please increase the inotify max user watches to at least 524288\necho 524288 > /proc/sys/fs/inotify/max_user_watches")
-        exit()
+        sys.exit(-1)
     # afl checks
     core_pattern_fp = open("/proc/sys/kernel/core_pattern")
     core_pattern = core_pattern_fp.read().strip()
     core_pattern_fp.close()
     if core_pattern != "core":
         print("Please set core_pattern to core: echo core >/proc/sys/kernel/core_pattern")
-        exit()
+        sys.exit(-1)
     if not disable_governor_check:
         num_cores = multiprocessing.cpu_count()
         for i in range(0,num_cores):
@@ -119,7 +119,7 @@ def check_limits(disable_governor_check):
             mode = fp.read().strip()
             if mode != "performance":
                 print("Please set scaling governor mode to performance: cd /sys/devices/system/cpu; echo performance | tee cpu*/cpufreq/scaling_governor")
-                exit()
+                sys.exit(-1)
 
 
 def main(args):

@@ -1,5 +1,5 @@
 #! /bin/bash
-set -x
+set -xe
 
 if [ -d "results/" ]; then
   rm -rf results
