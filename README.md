@@ -28,7 +28,7 @@ echo \
   $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 sudo docker run hello-world
 sudo groupadd docker
 sudo usermod -aG docker $USER
@@ -38,8 +38,16 @@ Now reboot
 
 ## Install other dependencies
 
+Tools:
 ```
 sudo apt-get install curl ca-certificates patchelf texinfo automake gcc zstd pip zip python3-venv
+```
+
+Fuzzware with GDMA (with docker installed):
+```
+git clone --recurse-submodules -b DMA https://github.com/fuzzware-fuzzer/fuzzware.git
+
+cd fuzzware && ./build_docker.sh
 ```
 
 ## Prepare the system for fuzzing
