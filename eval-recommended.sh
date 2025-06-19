@@ -11,12 +11,16 @@ if [ -d "$scripts_path/results/" ]; then
 fi
 mkdir $scripts_path/results
 
-if [ -d $venv_path ]; then
-  source $venv_path/bin/activate
+if [ ! -e "$venv_path/bin/activate" ]; then
+  rm -rf "$venv_path"
+fi
+
+if [ -d "$venv_path" ]; then
+  source "$venv_path/bin/activate"
 else
-  python3 -m venv $venv_path
-  source $venv_path/bin/activate
-  pip install -r $req_path
+  python3 -m venv "$venv_path"
+  source "$venv_path/bin/activate"
+  pip install -r "$req_path"
 fi
 
 

@@ -40,7 +40,7 @@ Now reboot
 
 Tools:
 ```
-sudo apt-get install curl ca-certificates patchelf texinfo automake gcc zstd pip zip python3-venv
+sudo apt-get install -y curl ca-certificates patchelf texinfo automake gcc zstd pip zip python3-venv
 ```
 
 Fuzzware with GDMA (with docker installed):
@@ -52,7 +52,10 @@ cd fuzzware && ./build_docker.sh
 
 ## Prepare the system for fuzzing
 ```
+# As root
 sudo su
+
+# Then run:
 echo 512 > /proc/sys/fs/inotify/max_user_instances
 echo 524288 > /proc/sys/fs/inotify/max_user_watches
 echo core >/proc/sys/kernel/core_pattern
