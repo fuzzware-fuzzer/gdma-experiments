@@ -525,7 +525,6 @@ def diff_project_models(projdirs: List[str], snipdir_postfix: str, reference_sni
                 diffs_by_type.setdefault(type(diff), {}).setdefault(projdir, []).append(diff)
         else:
             projects_without_diffs.append(projdir)
-
     return diffs_by_projdir, diffs_by_type, projects_without_diffs, excluded_projects
 
 def diff_project_modeling_perf(projdirs: List[str], snipdir_postfix: str, reference_snipdir_postfix: str) -> Tuple[DMAJobPerfSummary, DMAJobPerfSummary, Dict[str, Tuple[DMAJobPerfSummary, DMAJobPerfSummary]]]:
@@ -580,9 +579,11 @@ def diff_project_modeling_perf(projdirs: List[str], snipdir_postfix: str, refere
 
 def model_diff_main(args):
     projdirs: List[str] = []
-    print(args)
     for root_dir in args.root:
-        projdirs.extend(find_proj.find_projdirs(root_dir))
+        projects = find_proj.find_projdirs(root_dir)
+        for p in projects:
+            if "fuzzware-project_old" not in p:
+                projdirs.append(p)
     
     if not projdirs:
         print("Found no project directories. Nothing to do...")
@@ -653,17 +654,6 @@ def model_diff_main(args):
             num_diffs = sum((len(diffs) for diffs in diffs_by_project.values()))
             print(f"Got {num_diffs} diffs across {len(diffs_by_project)} projects (#without diff: {len(projects_without_diff)}, #skipped: {len(skipped_projects)})")
 
-            #for projdir, diffs in diffs_by_project.items():
-            #    print(f"================== {projdir} ==================")
-            #    for diff in diffs:
-            #        print(diff)
-
-            for diff_type, projdir_to_diffs in sorted(diffs_by_type.items(), key=lambda e: e[0].severity):
-                print(f"\n================== {diff_type.__name__} ==================\n")
-                for projdir, diffs in sorted(projdir_to_diffs.items(), key=lambda e: e[0]):
-                    print(f"================== {projdir} ==================")
-                    for diff in diffs:
-                        print(diff)
     else:
         # Compare performance metrics instead of models
         overall_perf_summary, overall_reference_perf_summary, summaries_per_project = diff_project_modeling_perf(projdirs, snipdir_postfix, reference_snipdir_postfix)
