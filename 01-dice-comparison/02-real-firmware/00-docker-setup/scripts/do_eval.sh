@@ -46,10 +46,12 @@ echo "timeout = $timeout" | tee -a *
 cd -
 # Run the fuzzers
 bash $dice_script $cores $iterations $target_string
+sleep 1m
 bash $p2im_script $cores $iterations $target_string
-
+sleep 3m
 # Run the coverage scripts
 python3 scripts/create_dice_cov.py --data-root $dice_base --cov-script /opt/scripts/cov.py --num-runs $iterations
+sleep 1m
 python3 scripts/create_dice_cov.py --data-root $p2im_base --cov-script /opt/scripts/cov.py --num-runs $iterations
 
 # collect results
