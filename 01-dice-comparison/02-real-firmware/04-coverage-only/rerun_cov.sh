@@ -2,7 +2,8 @@
 
 if [ "$#" -ne 2 ]; 
 then
-	echo "Usage TODO"
+	echo "Usage <path-to-experiment-data> <path-to-results>"
+	exit
 fi
 
 experiment_base=$1
@@ -15,7 +16,7 @@ then
 	echo "Got $experiment_base/DICEFuzzBase"
 	dice_fuzz_base="${experiment_base}/DICEFuzzBase"
 else
-	echo "Error"
+	echo "Error: Experiment dir does not contain DICEFuzzBase"
 	exit
 fi
 
@@ -24,7 +25,7 @@ then
 	echo "Got $experiment_base/P2IMFuzzBase"
 	p2im_fuzz_base="${experiment_base}/P2IMFuzzBase"
 else
-	echo "Error"
+	echo "Error: Experiment dir does not contain P2IMFuzzBase"
 	exit
 fi
 
